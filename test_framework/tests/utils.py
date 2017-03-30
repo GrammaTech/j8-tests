@@ -1,5 +1,8 @@
 """
 The various utils for tests
+The generate classpath takes in the path and returns class path required
+Change dir, the test system goes to test evaluators
+and builds the adaptor for that evaluator
 """
 import os
 import pytest
@@ -9,6 +12,9 @@ import functools
 def generate_classpath(tool_name, tool_path):
     '''
         takes in tools_path generates the classpath
+        These are specific rules for each tool
+        @tool : tool name, match case
+        @tool_path : path where tool is compiled
     '''
     if tool_name == 'Wala':
         # list of wala packages
@@ -18,10 +24,10 @@ def generate_classpath(tool_name, tool_path):
                 'com.ibm.wala.' +  pt, 'target/classes')\
                 for pt in prj])
         return classpath
+
     if tool_name == 'Soot':
         # class path for dependencies
         # root_dir is set in top level conftest
-        # XXX  may be read ant file
         dep = [os.path.join(pytest.root_dir,
             'src/dependencies/heros/heros-trunk.jar'),
             os.path.join(pytest.root_dir,
@@ -33,22 +39,11 @@ def generate_classpath(tool_name, tool_path):
         classpath = ".:" + ":".join(dep + cp_soot)
         return classpath
 
-def get_stdout(cmd):
-    """
-        function takes in cmd
-        returns shell ouput
-    """
-    try:
-        out = subprocess.check_output(cmd)
-        out = out.decode("utf-8").strip('\n')
-    except:
-        return None
-    return out
 
 def change_dir(test_dir):
     '''
-     A decorator to change to test dir
-     and return to start directory
+     A decorator to change to test dir and return to start directory
+     This is useful because we want the adapters to be build in same place
     '''
     def decorator(func):
         @functools.wraps(func)

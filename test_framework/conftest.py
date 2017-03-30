@@ -1,6 +1,6 @@
 '''
-This globs the tools and apps
-create a global function which can be used in every subdir
+Parses the command line options and makes it available for test apdapters
+Set all the static global variables here
 '''
 import pytest
 import glob
@@ -25,7 +25,9 @@ def tool_path(request):
 
 def pytest_namespace():
     '''
-        pytest global variable
+        pytest global variable used in every module
+        root_dir for the test
+        app_list : glob of all the applications
     '''
     return {
             'apps_list': [os.path.basename(x) for x in\
