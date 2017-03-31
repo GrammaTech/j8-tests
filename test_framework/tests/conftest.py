@@ -1,9 +1,11 @@
 '''
     Create auto test discovery using fixtures, It create two dynamic fixtures
-    1) comb: that is all combination of (tool, tool_path and apps)
-    2) tool_list: list of tool,tool_path
+    There fixtures create a different test for each element in the cross
+    product
+    1) comb: that is cross product of (tool, tool_path) and apps
+    2) tool_list: list of (tool, tool_path)
     If user wants to run a parametrized tests for either combination
-    the test evaluaters should use same fixture names
+    the test evaluators should use same fixture names
 '''
 import pytest
 import itertools
@@ -31,7 +33,7 @@ def pytest_generate_tests(metafunc):
             tool_list = zip(metafunc.config.option.tool,
                 metafunc.config.option.tool_path)
 
-    # read from a config file
+    # read from a configuration file
     if metafunc.config.option.conf_file:
         try:
             with open(metafunc.config.option.conf_file, 'r') as fread:

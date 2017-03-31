@@ -3,7 +3,6 @@
     1) test for adapters :
     2) test for the call graph
 '''
-# content of test_scenarios.py
 import pytest # pytest root dir
 import subprocess # forking a child process
 import os
@@ -28,6 +27,7 @@ def test_adapters(tool_list):
     classpath = utils.generate_classpath(tool_name, tool_path)
     # build adaptor
     cmd = ' '.join(['javac', '-cp', classpath, tool_name + 'CG.java'])
+    print(cmd)
     value = subprocess.call(cmd, shell=True)
     # check if the build passed
     assert value == 0
@@ -58,7 +58,7 @@ def test_callgraph(comb):
     expected = os.path.join(app_path, 'callgraph_expected')
 
     # skip  the test if the ground truth doesn't exists
-    # using imperitive skip option
+    # using imperative skip option
     if not os.path.exists(expected):
         message = "Ground Truth for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
@@ -74,8 +74,7 @@ def test_callgraph(comb):
         'grep', '-Ff', expected, 'fullcg | sort | uniq > actual'])
     subprocess.call(cmd, shell=True)
 
-    # check the diff
+    # check the difference
     status = filecmp.cmp(expected, 'actual', shallow=False)
     # check if passed
     assert status == True
-

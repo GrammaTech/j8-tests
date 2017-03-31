@@ -1,6 +1,6 @@
 """
 Following Utilities for running test
-1) generate classpath from tool path
+1) Generate appropriate classpath from tool path
 2) Decorator to change directory
 """
 import os
@@ -41,7 +41,8 @@ def generate_classpath(tool_name, tool_path):
 
 def change_dir(test_dir):
     '''
-    A decorator to change to test dir and return to start directory
+    A decorator to change to test directory, run tests and
+    change to current directory
     The test adapters are compiled in same directory as the test evaluators
     '''
     def decorator(func):
