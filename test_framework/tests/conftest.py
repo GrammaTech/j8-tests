@@ -1,12 +1,9 @@
 '''
-    Create auto test discovery using fixtures
-    pytest_generate_tests create a combination of different tests
-        This create a new test for every entry in list,
-        if we have tool -->[a,b] and apps -->[1,2]
-        it will generate test [(a,1), (b,1), (a,2), (b,2)]
-    To use it all test evaluators the test evaluator parameter should be
-    1) comb : if you need (tool,too_path), app combination
-    2) tool_list : if you need tool,tool_path combination
+    Create auto test discovery using fixtures, It create two dynamic fixtures
+    1) comb: that is all combination of (tool, tool_path and apps)
+    2) tool_list: list of tool,tool_path
+    If user wants to run a parametrized tests for either combination
+    the test evaluaters should use same fixture names
 '''
 import pytest
 import itertools
@@ -14,7 +11,8 @@ import json
 
 def pytest_generate_tests(metafunc):
     '''
-        generate test from combinations
+        generate test from combinations from fixtures
+
     '''
     tool_app_pair = []
     tool_list = []

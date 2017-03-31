@@ -1,8 +1,7 @@
 """
-The various utils for tests
-The generate classpath takes in the path and returns class path required
-Change dir, the test system goes to test evaluators
-and builds the adaptor for that evaluator
+Following Utilities for running test
+1) generate classpath from tool path
+2) Decorator to change directory
 """
 import os
 import pytest
@@ -11,8 +10,8 @@ import functools
 
 def generate_classpath(tool_name, tool_path):
     '''
-        takes in tools_path generates the classpath
-        These are specific rules for each tool
+        For a given tool_path, return the appropriate Java classpath. This
+        information varies by tool and we need it to build adapters."
         @tool : tool name, match case
         @tool_path : path where tool is compiled
     '''
@@ -42,8 +41,8 @@ def generate_classpath(tool_name, tool_path):
 
 def change_dir(test_dir):
     '''
-     A decorator to change to test dir and return to start directory
-     This is useful because we want the adapters to be build in same place
+    A decorator to change to test dir and return to start directory
+    The test adapters are compiled in same directory as the test evaluators
     '''
     def decorator(func):
         @functools.wraps(func)

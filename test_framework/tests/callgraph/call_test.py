@@ -1,6 +1,6 @@
 '''
     pytest file
-    1) test for adapters : the
+    1) test for adapters :
     2) test for the call graph
 '''
 # content of test_scenarios.py
@@ -23,6 +23,7 @@ def test_adapters(tool_list):
 
     '''
     tool_name, tool_path = tool_list
+    print(tool_list)
     # set class path
     classpath = utils.generate_classpath(tool_name, tool_path)
     # build adaptor
@@ -53,12 +54,21 @@ def test_callgraph(comb):
         main = None
     assert not main == None, main
 
+    # ground truth
+    expected = os.path.join(app_path, 'callgraph_expected')
+
+    # skip  the test if the ground truth doesn't exists
+    # using imperitive skip option
+    if not os.path.exists(expected):
+        message = "Ground Truth for app %s for test %s missing"\
+            % (app, os.path.basename(__file__))
+        pytest.skip(message)
+
     # get full cg
     cmd = ' '.join(['java', '-cp', class_path, adapter,
         os.path.join(app_path, '*.jar'), main, '> fullcg'])
     subprocess.call(cmd, shell=True)
-    # ground truth
-    expected = os.path.join(app_path, 'callgraph_expected')
+
     # actual value
     cmd = ' '.join(['export LANG=C && ',
         'grep', '-Ff', expected, 'fullcg | sort | uniq > actual'])
