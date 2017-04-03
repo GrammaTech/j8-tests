@@ -1,12 +1,17 @@
 '''
-    Create auto test discovery using fixtures, It create two dynamic fixtures
-    There fixtures create a different test for each element in the cross
-    product
-    1) comb: that is cross product of (tool, tool_path) and apps
-    2) tool_list: list of (tool, tool_path)
-    If user wants to run a parametrized tests for either combination
-    the test evaluators should use same fixture names
+    Performs auto tests discovery using fixtures. Creates two dynamic fixtures
+    and uses them to generate a test for every tool and every application.
+    Tools are identified by a pair (tool, tool_path) where tool is the tool's
+    name and tool_path specifies the path where the tool is found.
+
+    TODO : Review
+    If user wants to write a new parametrized tests using the fixtures,
+    they should include the fixture as parameter to the test function signature.
+    For example, if we want to use fixture : tool_list,
+    the signature for new test should be   : test_bar(tool_list)
+    This will create multiple new test depending on # of (tool, tool_path)
 '''
+
 import pytest
 import itertools
 import json
@@ -22,13 +27,13 @@ def pytest_generate_tests(metafunc):
     # create a list of combination of tool and tool_path
     if  metafunc.config.option.tool and\
             metafunc.config.option.tool_path:
-        # if a only one tool is passed
+        # if only one tool is passed
         if isinstance(metafunc.config.option.tool, str):
             tool_list = [
                 metafunc.config.option.tool,
                 metafunc.config.option.tool_path
             ]
-        # if tool list
+        # if a list of tools are passed
         elif isinstance(metafunc.config.option.tool, list):
             tool_list = zip(metafunc.config.option.tool,
                 metafunc.config.option.tool_path)

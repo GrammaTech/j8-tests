@@ -1,5 +1,5 @@
 '''
-    Parses the command line options, from these options the fixtures are set
+    Parses the command line options and uses them to set the fixtures
     Ref : https://docs.pytest.org/en/latest/example/simple.html
     Set all the static global variables
 '''
@@ -27,7 +27,7 @@ def tool_path(request):
 def pytest_namespace():
     '''
         sets pytest global variables used in every module
-        root_dir: root or the top level directory
+        root_dir : root or the top level directory
         app_list : glob of all the applications
     '''
     return {
