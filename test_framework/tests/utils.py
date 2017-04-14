@@ -7,6 +7,7 @@ import os
 import pytest
 import subprocess
 import functools
+import logging
 
 def generate_classpath(tool_name, tool_path):
     '''
@@ -59,3 +60,36 @@ def change_dir(test_dir):
         return wrapper
     return decorator
 
+def get_logger():
+    ''' common logger interface'''
+    logger = logging.getLogger('JAVA8_Tests')
+    return logger
+
+def run_cmd(cmd):
+    '''
+        Use the subprocess to call shell a command
+        This would return stdout, stderr and return code
+        User should use this interface to run as it logs the error
+    '''
+    try:
+        proc = subprocess.Popen(cmd,\
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = proc.communicate()
+        # convert byte to string
+        stderr = stderr.decode("utf-8")
+        stdout = stdout.decode("utf-8")
+        # get the return code
+        returncode = proc.returncode
+    except:
+        returncode = -1
+        stdout = None
+        stderr = None
+    # log to file when error
+    logger = get_logger()
+    if not returncode == 0 and\
+        len(logger.handlers) > 0 and\
+            isinstance(logger.handlers[0], logging.FileHandler):
+        logger.debug(cmd)
+        logger.debug(stdout)
+        logger.debug(stderr)
+    return stdout, stderr, returncode

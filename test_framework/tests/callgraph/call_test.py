@@ -12,6 +12,7 @@ import filecmp # file comparison
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
+
 @utils.change_dir(os.path.dirname(__file__))
 def test_adapters(tool_list):
     '''
@@ -22,15 +23,14 @@ def test_adapters(tool_list):
 
     '''
     tool_name, tool_path = tool_list
-    print(tool_list)
     # set class path
     classpath = utils.generate_classpath(tool_name, tool_path)
     # build adaptor
-    cmd = ' '.join(['javac', '-cp', classpath, tool_name + 'CG.java'])
-    print(cmd)
-    value = subprocess.call(cmd, shell=True)
+    cmd = ['javac', '-cp', classpath, tool_name + 'CG.java']
+    # run the adapter cmd
+    _, _, returncode = utils.run_cmd(cmd)
     # check if the build passed
-    assert value == 0
+    assert returncode == 0
 
 
 @utils.change_dir(os.path.dirname(__file__))
@@ -62,17 +62,23 @@ def test_callgraph(comb):
     if not os.path.exists(expected):
         message = "Ground Truth for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
+       # log the message
+        utils.get_logger().warning(message)
         pytest.skip(message)
 
     # get full cg
-    cmd = ' '.join(['java', '-cp', class_path, adapter,
-        os.path.join(app_path, '*.jar'), main, '> fullcg'])
-    subprocess.call(cmd, shell=True)
+    cmd = ['java', '-cp', class_path, adapter,
+        os.path.join(app_path, '*.jar'), main, '> fullcg']
+    # run to generate the full cfg
+    _, _, returncode = utils.run_cmd(cmd)
+
+    message = 'CFG Failed'
+    assert  returncode == 0, message
 
     # actual value
     cmd = ' '.join(['export LANG=C && ',
         'grep', '-Ff', expected, 'fullcg | sort | uniq > actual'])
-    subprocess.call(cmd, shell=True)
+    assert subprocess.call(cmd, shell=True) == 0, cmd
 
     # check the difference
     status = filecmp.cmp(expected, 'actual', shallow=False)

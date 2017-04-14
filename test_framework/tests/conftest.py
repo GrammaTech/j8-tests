@@ -12,14 +12,14 @@
     This will create multiple new test depending on # of (tool, tool_path)
 '''
 
-import pytest
-import itertools
-import json
+import pytest # apps_list
+import itertools # product
+import json #load
+import logging
 
 def pytest_generate_tests(metafunc):
     '''
         generate test from combinations from fixtures
-
     '''
     tool_app_pair = []
     tool_list = []
@@ -57,3 +57,33 @@ def pytest_generate_tests(metafunc):
     # create a different test for every entry in tool_list
     if 'tool_list' in metafunc.funcargnames:
         metafunc.parametrize('tool_list', tool_list)
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    '''
+        We want to make custom report, where during the
+        postprocessing of the test reports, we would access the executing
+        environment to implement a hook that  gets called
+        when the test report object is about to be created
+        In this case : we log the failing test as error
+    '''
+    outcome = yield
+    rep = outcome.get_result()
+    # log on call, not on setup/teardown
+    if rep.when == "call":
+        # get logger
+        logger = logging.getLogger('JAVA8_Tests')
+        # write when handler is a file
+        if len(logger.handlers) > 0 and\
+                isinstance(logger.handlers[0], logging.FileHandler):
+            # custom message
+            # it logs test name, status and parameter
+            message = 'Test --> %s -- status --> %s -- param --> %s' % \
+                (item.__dict__['name'], rep.outcome,\
+                item.__dict__['funcargs'])
+            # if test failed log it as error
+            if rep.failed:
+                logger.error(message)
+            # log it as info
+            else:
+                logger.info(message)
