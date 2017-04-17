@@ -15,7 +15,8 @@ public class SootCG {
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<args.length-1;i++)
             sb.append(args[i]).append(":");
-        sb.append("../../src/dependencies/rt.jar:../../src/dependencies/jce.jar");
+        sb.append("/usr/local/java/jre/lib/rt.jar:/usr/local/java/jre/lib/jce.jar");
+        //Options.v().set_soot_classpath("Church.jar:/usr/local/java/jre/lib/rt.jar:/usr/local/java/jre/lib/jce.jar");
         Options.v().set_soot_classpath(sb.toString());
         Options.v().classes().add(args[args.length-1]);
         Options.v().set_whole_program(true);
