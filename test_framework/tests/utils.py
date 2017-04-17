@@ -39,6 +39,13 @@ def generate_classpath(tool_name, tool_path):
         # combined classpath
         classpath = ".:" + ":".join(dep + cp_soot)
         return classpath
+        
+    if tool_name == 'Accrue':
+        return ":".join([
+            ".",
+            os.path.join(tool_path, 'target/classes'),
+            os.path.join(tool_path, 'target/dependency/*')
+            ])
 
 
 def change_dir(test_dir):
