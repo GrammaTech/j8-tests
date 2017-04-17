@@ -51,6 +51,8 @@ def pytest_generate_tests(metafunc):
                 tool_list = json.load(fread)
         except:
             tool_list = []
+            
+    tool_list = [(a.title(),b) for (a,b) in tool_list]
 
     # create combination of tools * apps
     # for any function with parameter named 'comb'
