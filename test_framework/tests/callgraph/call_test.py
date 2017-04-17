@@ -44,6 +44,7 @@ def test_callgraph(comb):
 
     # get class path
     class_path = utils.generate_classpath(tool_name, tool_path)
+    assert not class_path == None
     # adapter
     adapter = tool_name + 'CG'
 
