@@ -5,10 +5,18 @@
     name and tool_path specifies the path where the tool is found.
 
     TODO : Review
-    If user wants to write a new parametrized tests using the fixtures,
-    they should include the fixture as parameter to the test function signature.
-    For example, if we want to use fixture : tool_list,
-    the signature for new test should be   : test_bar(tool_list)
+
+    The hook pytest_generate_tests helps in defining and running various
+    different tests dynamically, these tests are created depending on
+    different type of inputs given by user. For example, here,
+    we want to run tests based on command line option for pair
+    (tool, tool_path). In principle, there could be many pairs and
+    we would like to run various tests for all such (tool, tool_path) pairs.
+    By using the hook pytest_generate_tests gives us the option
+    to create different tests dynamically.
+
+    In order to run the test the usage for new test should be :
+        new_test(tool_list)
     This will create multiple new test depending on # of (tool, tool_path)
 '''
 
@@ -19,7 +27,7 @@ import logging
 
 def pytest_generate_tests(metafunc):
     '''
-        generate test from combinations from fixtures
+        generate test from combinations of fixtures
     '''
     tool_app_pair = []
     tool_list = []
@@ -61,13 +69,15 @@ def pytest_generate_tests(metafunc):
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     '''
-        We want to make custom report, where during the
-        postprocessing of the test reports, we would access the executing
-        environment to implement a hook that  gets called
-        when the test report object is about to be created
+        We are using pytest hook to generate logs.
+        Pytest gives an access to the executing environment,
+        by implementing a hook to it, we can generate custom test reports.
         In this case : we log the failing test as error
+        @item : is an test run object
     '''
+    # run the test first
     outcome = yield
+    # result env for the test
     rep = outcome.get_result()
     # log on call, not on setup/teardown
     if rep.when == "call":
@@ -76,14 +86,13 @@ def pytest_runtest_makereport(item, call):
         # write when handler is a file
         if len(logger.handlers) > 0 and\
                 isinstance(logger.handlers[0], logging.FileHandler):
-            # custom message
-            # it logs test name, status and parameter
+            # custom message to log test name, status and parameter
             message = 'Test --> %s -- status --> %s -- param --> %s' % \
                 (item.__dict__['name'], rep.outcome,\
                 item.__dict__['funcargs'])
             # if test failed log it as error
             if rep.failed:
                 logger.error(message)
-            # log it as info
+            # if test passed log it as info
             else:
                 logger.info(message)

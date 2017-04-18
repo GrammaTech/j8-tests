@@ -8,6 +8,7 @@ import pytest
 import subprocess
 import functools
 import logging
+import sys
 
 def generate_classpath(tool_name, tool_path):
     '''
@@ -67,10 +68,17 @@ def get_logger():
 
 def run_cmd(cmd):
     '''
-        Use the subprocess to call shell a command
+        Use the subprocess to execute a shell command
         This would return stdout, stderr and return code
         User should use this interface to run as it logs the error
     '''
+    # log to file when error
+    logger = get_logger()
+    use_logger = False
+    # log only to file
+    if len(logger.handlers) > 0 and\
+        isinstance(logger.handlers[0], logging.FileHandler):
+        use_logger = True
     try:
         proc = subprocess.Popen(cmd,\
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -80,16 +88,15 @@ def run_cmd(cmd):
         stdout = stdout.decode("utf-8")
         # get the return code
         returncode = proc.returncode
+        if not returncode == 0 and\
+            use_logger:
+            logger.debug(stdout)
+            logger.debug(stderr)
+    # incase of error set everything null
     except:
         returncode = -1
         stdout = None
         stderr = None
-    # log to file when error
-    logger = get_logger()
-    if not returncode == 0 and\
-        len(logger.handlers) > 0 and\
-            isinstance(logger.handlers[0], logging.FileHandler):
-        logger.debug(cmd)
-        logger.debug(stdout)
-        logger.debug(stderr)
+        if use_logger:
+            logger.debug(sys.exc_info())
     return stdout, stderr, returncode
