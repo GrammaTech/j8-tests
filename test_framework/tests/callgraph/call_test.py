@@ -13,7 +13,6 @@ import glob #glob.glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
-
 @utils.change_dir(os.path.dirname(__file__))
 def test_adapters(tool_list):
     '''
@@ -78,11 +77,11 @@ def test_callgraph(comb):
 
     # cmd for fullcg
     cmd = ['java', '-cp', class_path, adapter, jar_name, main]
-    # generate the full cfg
+    # generate the fullcg
     stdout, _, returncode = utils.run_cmd(cmd)
 
     # failure message to display
-    message = 'CFG Failed'
+    message = 'Adapter failed to produce callgraph'
     assert  returncode == 0, message
     # write out the fullcg
     with open('fullcg', 'w') as fwrite:

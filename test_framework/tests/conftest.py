@@ -4,8 +4,6 @@
     Tools are identified by a pair (tool, tool_path) where tool is the tool's
     name and tool_path specifies the path where the tool is found.
 
-    TODO : Review
-
     The hook pytest_generate_tests helps in defining and running various
     different tests dynamically, these tests are created depending on
     different type of inputs given by user. For example, here,

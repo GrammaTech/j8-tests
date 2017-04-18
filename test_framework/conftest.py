@@ -13,7 +13,8 @@ def pytest_addoption(parser):
     parser.addoption("--tool_path", action="append",\
             help="pass the path to tool")
     parser.addoption("--conf_file", help="configuration file")
-    parser.addoption("--log_output", help="place holder for log_output")
+    parser.addoption("--log_output", \
+            help="Set it to direct log output to a logfile")
 
 @pytest.fixture
 def tool(request):
@@ -27,7 +28,7 @@ def tool_path(request):
 
 def pytest_namespace():
     '''
-        return dict of name->object to be made globally available
+        return dict of the following variables to be made globally available,
         root_dir : root or the top level directory
         app_list : glob of all the applications
     '''

@@ -48,8 +48,10 @@ def change_dir(test_dir):
     The test adapters are compiled in same directory as the test evaluators
     '''
     def decorator(func):
+        ''' main decorator'''
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
+            ''' inner wrapper '''
             # cur dir
             cur_dir = os.getcwd()
             # change to test dir
@@ -92,11 +94,11 @@ def run_cmd(cmd):
             use_logger:
             logger.debug(stdout)
             logger.debug(stderr)
-    # incase of error set everything null
+    # in case of error set everything null
     except:
         returncode = -1
         stdout = None
         stderr = None
         if use_logger:
-            logger.debug(sys.exc_info())
+            logger.error(sys.exc_info())
     return stdout, stderr, returncode
