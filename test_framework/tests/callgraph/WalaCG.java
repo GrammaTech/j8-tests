@@ -48,7 +48,7 @@ public class WalaCG {
     return n.getMethod().getSignature();
   }
   public static void main(String[] args) throws WalaException, IllegalArgumentException, CancelException, IOException {
-    Graph<CGNode> g = buildPrunedCallGraph(args[0], new FileProvider().getFile( CallGraphTestUtil.REGRESSION_EXCLUSIONS));
+    Graph<CGNode> g = buildPrunedCallGraph(args[1], new FileProvider().getFile(CallGraphTestUtil.REGRESSION_EXCLUSIONS));
 
     for (Iterator<CGNode> it = g.iterator(); it.hasNext();) {
       CGNode n = it.next();
@@ -57,8 +57,6 @@ public class WalaCG {
         System.out.println(toString(n) + " -> " + toString(s));
       }
     }
-    
-    
   }
 
   public static Graph<CGNode> buildPrunedCallGraph(String appJar, File exclusionFile) throws WalaException,
@@ -74,11 +72,7 @@ public class WalaCG {
     com.ibm.wala.ipa.callgraph.CallGraphBuilder builder = Util.makeZeroCFABuilder(options, new AnalysisCache(), cha, scope);
     CallGraph cg = builder.makeCallGraph(options, null);
 
-    //System.err.println(CallGraphStats.getStats(cg));
-
-    Graph<CGNode> g = pruneForAppLoader(cg);
-
-    return g;
+    return pruneForAppLoader(cg);
   }
 
   public static Graph<CGNode> pruneForAppLoader(CallGraph g) throws WalaException {

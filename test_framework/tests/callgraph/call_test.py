@@ -56,6 +56,8 @@ def xtest_callgraph(comb):
 
     # set app path src/apps
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+    dep_path = os.path.join(pytest.root_dir, 'src', 'dependencies')
+
     # find the app jar name
     try:
         jar_name = glob.glob(os.path.join(app_path, '*.jar'))[0]
@@ -83,7 +85,7 @@ def xtest_callgraph(comb):
         pytest.skip(message)
 
     # cmd for fullcg
-    cmd = ['java', '-cp', class_path, adapter, jar_name, main]
+    cmd = ['java', '-cp', dep_path, class_path, adapter, jar_name, main]
     # generate the fullcg
     stdout, _, returncode = utils.run_cmd(cmd)
 
