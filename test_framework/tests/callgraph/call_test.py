@@ -13,8 +13,11 @@ import glob #glob.glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
-@utils.change_dir(os.path.dirname(__file__))
 def test_adapters(tool_list):
+    xtest_adapters(tool_list)
+
+@utils.change_dir(os.path.dirname(__file__))
+def xtest_adapters(tool_list):
     '''
         builds the adapter
         It takes the tool_path, gets the class path
@@ -33,8 +36,11 @@ def test_adapters(tool_list):
     assert returncode == 0
 
 
-@utils.change_dir(os.path.dirname(__file__))
 def test_callgraph(comb):
+    xtest_callgraph(comb)
+
+@utils.change_dir(os.path.dirname(__file__))
+def xtest_callgraph(comb):
     '''
         Does the callgraph test
     '''
