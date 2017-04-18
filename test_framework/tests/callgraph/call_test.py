@@ -8,6 +8,7 @@ import subprocess # forking a child process
 import os
 import sys # path append
 import filecmp # file comparison
+import glob #glob.glob
 
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
@@ -22,15 +23,14 @@ def test_adapters(tool_list):
 
     '''
     tool_name, tool_path = tool_list
-    print(tool_list)
     # set class path
     classpath = utils.generate_classpath(tool_name, tool_path)
     # build adaptor
-    cmd = ' '.join(['javac', '-cp', classpath, tool_name + 'CG.java'])
-    print(cmd)
-    value = subprocess.call(cmd, shell=True)
+    cmd = ['javac', '-cp', classpath, tool_name + 'CG.java']
+    # run the adapter cmd
+    _, _, returncode = utils.run_cmd(cmd)
     # check if the build passed
-    assert value == 0
+    assert returncode == 0
 
 
 @utils.change_dir(os.path.dirname(__file__))
@@ -38,14 +38,23 @@ def test_callgraph(comb):
     '''
         Does the callgraph test
     '''
+    # setup for the test
     tool, app = comb
     tool_name, tool_path = tool
-    # set app path src/apps
-    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+
     # get class path
     class_path = utils.generate_classpath(tool_name, tool_path)
     # adapter
     adapter = tool_name + 'CG'
+
+    # set app path src/apps
+    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+    # find the app jar name
+    try:
+        jar_name = glob.glob(os.path.join(app_path, '*.jar'))[0]
+    except:
+        jar_name = os.path.join(app_path, '*.jar')
+
     # get main name from first line
     try:
         with open(os.path.join(app_path, 'main'), 'r') as fread:
@@ -62,19 +71,37 @@ def test_callgraph(comb):
     if not os.path.exists(expected):
         message = "Ground Truth for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
+       # log the message
+        utils.get_logger().warning(message)
         pytest.skip(message)
 
-    # get full cg
-    cmd = ' '.join(['java', '-cp', class_path, adapter,
-        os.path.join(app_path, '*.jar'), main, '> fullcg'])
-    subprocess.call(cmd, shell=True)
+    # cmd for fullcg
+    cmd = ['java', '-cp', class_path, adapter, jar_name, main]
+    # generate the fullcg
+    stdout, _, returncode = utils.run_cmd(cmd)
 
-    # actual value
-    cmd = ' '.join(['export LANG=C && ',
-        'grep', '-Ff', expected, 'fullcg | sort | uniq > actual'])
-    subprocess.call(cmd, shell=True)
+    # failure message to display
+    message = 'Adapter failed to produce callgraph'
+    assert  returncode == 0, message
+    # write out the fullcg
+    with open('fullcg', 'w') as fwrite:
+        fwrite.write(stdout)
 
-    # check the difference
-    status = filecmp.cmp(expected, 'actual', shallow=False)
-    # check if passed
-    assert status == True
+    # get actual value
+    expected_list = set()
+    fullcg_list = set()
+    # read fullcg from file
+    with open('fullcg', 'r') as fread:
+        for line in fread:
+            fullcg_list.add(line)
+    # read expected from file
+    with open(expected, 'r') as fread:
+        for line in fread:
+            expected_list.add(line)
+    # get the intersection of expected and fullcg
+    actual = set(sorted(expected_list.intersection(fullcg_list)))
+    message = 'Ground Truth differs for app %s' % app
+    # actual and expected sets should be of same size
+    assert len(actual) == len(expected_list) , message
+    # assert the difference of actual and expected to be zero
+    assert len(actual ^  expected_list) == 0, message
