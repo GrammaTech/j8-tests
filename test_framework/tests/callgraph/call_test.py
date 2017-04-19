@@ -85,7 +85,7 @@ def xtest_callgraph(comb):
         pytest.skip(message)
 
     # cmd for fullcg
-    cmd = ['java', '-cp', dep_path, class_path, adapter, jar_name, main]
+    cmd = ['java', '-cp', class_path, adapter, dep_path, jar_name, main]
     # generate the fullcg
     stdout, _, returncode = utils.run_cmd(cmd)
 
