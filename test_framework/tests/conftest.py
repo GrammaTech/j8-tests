@@ -68,11 +68,14 @@ def pytest_generate_tests(metafunc):
             apps_list = [apps_list]
         tool_app_pair = [tup for tup in\
                 itertools.product(tool_list, apps_list)]
-        metafunc.parametrize('comb', tool_app_pair)
+        metafunc.parametrize('comb', tool_app_pair, 
+                             ids=[tool + '_' + app 
+                                  for ((tool,path),app) in tool_app_pair])
 
     # create a different test for every entry in tool_list
     if 'tool_list' in metafunc.funcargnames:
-        metafunc.parametrize('tool_list', tool_list)
+        metafunc.parametrize('tool_list', tool_list,
+                             ids=[t for (t,p) in tool_list])
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
