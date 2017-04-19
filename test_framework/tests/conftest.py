@@ -22,6 +22,8 @@ import pytest # apps_list
 import itertools # product
 import json #load
 import logging
+import os
+import glob
 
 def pytest_generate_tests(metafunc):
     '''
@@ -58,8 +60,14 @@ def pytest_generate_tests(metafunc):
     # for any function with parameter named 'comb'
     # create a new test with entry from combination
     if 'comb' in metafunc.funcargnames:
+        apps_list = metafunc.config.option.app
+        if not apps_list:
+            apps_list = [os.path.basename(x) for x in\
+                         glob.glob(os.path.join(pytest.root_dir, 'src', 'apps', '*'))]
+        elif isinstance(apps_list, str):
+            apps_list = [apps_list]
         tool_app_pair = [tup for tup in\
-                itertools.product(tool_list, pytest.apps_list)]
+                itertools.product(tool_list, apps_list)]
         metafunc.parametrize('comb', tool_app_pair)
 
     # create a different test for every entry in tool_list

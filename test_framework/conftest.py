@@ -4,7 +4,6 @@
     Set all the static global variables
 '''
 import pytest
-import glob
 import os
 
 def pytest_addoption(parser):
@@ -15,6 +14,7 @@ def pytest_addoption(parser):
     parser.addoption("--conf_file", help="configuration file")
     parser.addoption("--log_output", \
             help="Set it to direct log output to a logfile")
+    parser.addoption("--app", action="append")
 
 @pytest.fixture
 def tool(request):
@@ -30,10 +30,7 @@ def pytest_namespace():
     '''
         return dict of the following variables to be made globally available,
         root_dir : root or the top level directory
-        app_list : glob of all the applications
     '''
     return {
-            'apps_list': [os.path.basename(x) for x in\
-                glob.glob('src/apps/*')],
             'root_dir' : os.getcwd(),
             }
