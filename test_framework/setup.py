@@ -82,5 +82,5 @@ if __name__ == "__main__":
     logger.info('Running System Check')
     run_check(logger)
     # call pytest, use '.' to run in current directory
-    pytest_param = ' '.join(sys.argv[1:]) + ' .'
-    pytest.main(pytest_param)
+    sys.argv.extend('.');
+    pytest.main(sys.argv[1:])
