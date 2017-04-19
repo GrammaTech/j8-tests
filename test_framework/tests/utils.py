@@ -29,16 +29,21 @@ def generate_classpath(tool_name, tool_path):
     if tool_name == 'Soot':
         # class path for dependencies
         # root_dir is set in top level conftest
-        dep = [os.path.join(pytest.root_dir,
-            'src/dependencies/heros/heros-trunk.jar'),
-            os.path.join(pytest.root_dir,
-            'src/dependencies/jasmin/libs/*')]
+        dep = [tool_path + '/../heros/heros-trunk.jar',
+               tool_path + '/../jasmin/libs/*']
         # soot path is set from tool_path
         cp_soot = [os.path.join(tool_path, 'classes'),
                    os.path.join(tool_path, 'libs/*')]
         # combined classpath
         classpath = ".:" + ":".join(dep + cp_soot)
         return classpath
+        
+    if tool_name == 'Accrue':
+        return ":".join([
+            ".",
+            os.path.join(tool_path, 'target/classes'),
+            os.path.join(tool_path, 'target/dependency/*')
+            ])
 
 
 def change_dir(test_dir):

@@ -13,8 +13,11 @@ import glob #glob.glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
-@utils.change_dir(os.path.dirname(__file__))
 def test_adapters(tool_list):
+    xtest_adapters(tool_list)
+
+@utils.change_dir(os.path.dirname(__file__))
+def xtest_adapters(tool_list):
     '''
         builds the adapter
         It takes the tool_path, gets the class path
@@ -33,8 +36,11 @@ def test_adapters(tool_list):
     assert returncode == 0
 
 
-@utils.change_dir(os.path.dirname(__file__))
 def test_callgraph(comb):
+    xtest_callgraph(comb)
+
+@utils.change_dir(os.path.dirname(__file__))
+def xtest_callgraph(comb):
     '''
         Does the callgraph test
     '''
@@ -44,11 +50,14 @@ def test_callgraph(comb):
 
     # get class path
     class_path = utils.generate_classpath(tool_name, tool_path)
+    assert not class_path == None
     # adapter
     adapter = tool_name + 'CG'
 
     # set app path src/apps
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+    dep_path = os.path.join(pytest.root_dir, 'src', 'dependencies')
+
     # find the app jar name
     try:
         jar_name = glob.glob(os.path.join(app_path, '*.jar'))[0]
@@ -76,7 +85,7 @@ def test_callgraph(comb):
         pytest.skip(message)
 
     # cmd for fullcg
-    cmd = ['java', '-cp', class_path, adapter, jar_name, main]
+    cmd = ['java', '-cp', dep_path, class_path, adapter, jar_name, main]
     # generate the fullcg
     stdout, _, returncode = utils.run_cmd(cmd)
 
