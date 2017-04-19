@@ -19,9 +19,10 @@ public class AccrueCG {
         // Build the class path (we have all the components separated out, but
         // Accrue wants a ':' separated string
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < args.length - 1; i++) sb.append(args[i]).append(File.separatorChar);
+        for (int i = 1; i < args.length - 1; i++)
+            sb.append(args[i]).append(File.pathSeparatorChar);
         sb.append(jre_jars).append(File.separatorChar).append("rt.jar");
-        sb.append(File.separatorChar);
+        sb.append(File.pathSeparatorChar);
         sb.append(jre_jars).append(File.separatorChar).append("jce.jar");
 
         AnalysisUtil.init(
