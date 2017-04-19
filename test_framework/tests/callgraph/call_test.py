@@ -29,7 +29,7 @@ def xtest_adapters(tool_list):
     # set class path
     classpath = utils.generate_classpath(tool_name, tool_path)
     # build adaptor
-    cmd = ['javac', '-cp', classpath, tool_name + 'CG.java']
+    cmd = ['javac', '-cp', classpath, tool_name + 'CGAdapter.java']
     # run the adapter cmd
     _, _, returncode = utils.run_cmd(cmd)
     # check if the build passed
@@ -52,7 +52,7 @@ def xtest_callgraph(comb):
     class_path = utils.generate_classpath(tool_name, tool_path)
     assert not class_path == None
     # adapter
-    adapter = tool_name + 'CG'
+    adapter = tool_name + 'CGAdapter'
 
     # set app path src/apps
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)

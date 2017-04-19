@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class AccrueCG {
+public class AccrueCGAdapter {
     // args == [jre path, app jar 1, ..., app jar n, entrypoint]
     public static void main(String[] args) throws WalaException, IOException {
         String jre_jars = args[0];

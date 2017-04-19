@@ -4,7 +4,7 @@ import soot.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.options.Options;
 
-public class SootCG {
+public class SootCGAdapter {
     // args == [jre path, app jar 1, ..., app jar n, entrypoint]
     public static void main(String[] args) {
         String jre_jars = args[0];
