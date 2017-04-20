@@ -80,7 +80,9 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
   * a lower-level specification of the IR with examples if appropriate
   * any info that the user would find relevant when writing an adapter (note this is NOT the place to document how to write an adapter, here just put any features unique to that specific IR that may help someone writing an adapter, such as "don't forget to print full method names including package information").
 
-### Call Graph IR
+### Call Graph 
+
+#### IR
 
 The call graph IR is a plain text file with one call graph edge per line. Each edge is represented as <tt>_node_ -> _node_</tt>, where _node_ is <tt>full.class.name(method_descriptor)</tt>. For example:
 
@@ -94,6 +96,17 @@ it may ignore the entry point and output additional edges which aren't
 reachable from the entry point).
 
 ... more soon ...
+
+#### Test Family
+
+For every test, give
+* Basic description (e.g. "check for presence of specific edges")
+* Motivation (features/analyses we expect to test)
+* Relevant info on provided ground truth, how we generated it (both process and motivation)
+
+Give information on how to extend the test family
+* Future test ideas
+* Hints specific to this IR e.g graph operations/libraries for CG test family
 
 ### Slicing IR/Queries
 
@@ -141,3 +154,5 @@ This would run the all test, the tool and tool_path combination will build all a
 
 ### Adding a new IR 
 * Will need adapters for every tool and new test evaluators
+
+### Documentation guidelines
