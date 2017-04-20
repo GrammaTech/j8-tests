@@ -63,22 +63,9 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 
 ## Provided Applications
 
-* Describe each application here, giving at least:
-  * general info such as purpose (e.g. "this is a mail server application")
-  * size in MB/LOC as appropriate
-  * source where it was obtained, ideally with a link
-  * rationale for inclusion in test suite (e.g. particulars on use of J8 features)
-  * any other relevant info such as entrypoint classes for tools that require them
-
 <a name="provided-tests"/> 
 
 ## Provided Test Families and Tests
-
-* Describe every IR in detail, giving at least:
-  * a high-level description of the IR, what information it contains and why it was chosen
-  * one high-level paragraph describing the test family associated with this IR. Don't add information that is redundant wrt comments in the code, but give an overview of what we test (e.g. "our call graph tests include testing for feaures such as: including a particular method, graph connectedness in the presence of lambdas, etc, etc"...)
-  * a lower-level specification of the IR with examples if appropriate
-  * any info that the user would find relevant when writing an adapter (note this is NOT the place to document how to write an adapter, here just put any features unique to that specific IR that may help someone writing an adapter, such as "don't forget to print full method names including package information").
 
 ### Call Graph 
 
@@ -99,14 +86,7 @@ reachable from the entry point).
 
 #### Test Family
 
-For every test, give
-* Basic description (e.g. "check for presence of specific edges")
-* Motivation (features/analyses we expect to test)
-* Relevant info on provided ground truth, how we generated it (both process and motivation)
 
-Give information on how to extend the test family
-* Future test ideas
-* Hints specific to this IR e.g graph operations/libraries for CG test family
 
 ### Slicing IR/Queries
 
@@ -156,3 +136,29 @@ This would run the all test, the tool and tool_path combination will build all a
 * Will need adapters for every tool and new test evaluators
 
 ### Documentation guidelines
+
+When extending the test suite, add documentation to cover at least the following details.
+
+* When adding a new application
+  * general info such as purpose (e.g. "this is a mail server application")
+  * size in MB/LOC as appropriate
+  * source where it was obtained, ideally with a link
+  * rationale for inclusion in test suite (e.g. particulars on use of J8 features)
+  * any other relevant info such as entrypoint classes for tools that require them
+  
+* When adding a new IR/test family
+  * a high-level description of the IR, what information it contains and why it was chosen
+  * one high-level paragraph describing the test family associated with this IR. Don't add information that is redundant wrt comments in the code, but give an overview of what we test
+  * a lower-level specification of the IR with examples if appropriate
+  * any info that the user would find relevant when writing an adapter (note this is NOT the place to document how to write an adapter, here just put any features unique to that specific IR that may help someone writing an adapter, such as "don't forget to print full method names including package information").
+  * any technical info relevant to a user writing new tests using this IR, e.g. libraries/APIs that may be useful in processing the IR
+  * any ideas for future tests using this IR
+  
+* When adding a new test
+  * Basic description (e.g. "check for presence of specific edges in the call graph")
+  * Motivation (features/analyses the test is addressing)
+  * Relevant info on provided ground truth, including how it was generated and why it was chosen (process and motivation)
+
+Give information on how to extend the test family
+
+
