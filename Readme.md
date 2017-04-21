@@ -63,6 +63,20 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 
 ## Provided Applications
 
+
+### Church
+
+* 'Church' is a tiny program which implements [Church
+   numerals](https://en.wikipedia.org/wiki/Church_encoding) in Java with lambda's.
+   It was initially written as sort of a lambda torture test, since it makes
+   extensive use of lambdas with varying different forms of variable capture.
+* It is only about a hudren lines of code (and should be relative fast to 
+  analyze with most tools)
+* The source code (<tt>Church.java</tt>) lives alongsie the <tt>.jar</tt> in apps/church.
+* The Church class (no package) has a main method which demonstrates the various operations
+  and is a suitable entry point for analysis and should provide good coverage of all features.
+
+
 <a name="provided-tests"/> 
 
 ## Provided Test Families and Tests
