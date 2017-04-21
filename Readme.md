@@ -92,7 +92,7 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 * [Apache Cassandra](http://cassandra.apache.org/) is a database server. 
 * It is about 300k lines of code (and about 5mb of compiled class files).
 * The source code is available at  https://git-wip-us.apache.org/repos/asf/cassandra.git. 
-  The provided jars were build with <tt>3d90bb0cc74ca52fc6a9947a746695630ca7fc2a</tt> 
+  The provided jars were built with <tt>3d90bb0cc74ca52fc6a9947a746695630ca7fc2a</tt> 
   (3.10 development branch).
 * Cassandra use lambda expressions and method references extensively.
 * <tt>org.apache.cassandra.service.CassandraDaemon</tt> has a main method and is the 
@@ -120,6 +120,17 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 * There is no single entry point for the Java8 runtime, and it certainly isn't suitable
   for analysis as a whole. Instead small subsets or individual classes are typically analyzed.
 
+### Jetty
+
+* [Jetty](http://www.eclipse.org/jetty/) is a web server and servlet container.
+* It is about 450k lines of code and about 1mb of jars (but some thing are dynamically loaded
+  and weren't included in the test suite).
+* The source code is available at https://github.com/eclipse/jetty.project.git. The provided
+  jars were built with <tt>0fc897233a0a83720d7d353b98224b662f152463</tt> (the 9.4.0
+  development branch)
+* Jetty uses lambda expressions and method references.
+* <tt>org.eclipse.jetty.start.Main</tt> has a main method and is the primary driver for the 
+  server.
 
 <a name="provided-tests"/> 
 
