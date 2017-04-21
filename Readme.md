@@ -76,6 +76,17 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 * The Church class (no package) has a main method which demonstrates the various operations
   and is a suitable entry point for analysis and should provide good coverage of all features.
 
+### Ant
+
+* [Apache Ant](http://ant.apache.org/) is a build system for Java projects.
+* It is about 200k lines of code (and about 2mb of compiled class files).
+* The source code is available at  https://git-wip-us.apache.org/repos/asf/ant.git. The provided 
+  jars were build with <tt>193f24672b1d3f9ce11bd395b59e3ed93b5ecec6</tt> (shortly after 1.10.0).
+* The latest (1.10) version of Ant has begun requiring Java8 and they use lambda expressions 
+  and method references.
+* <tt>org.apache.tools.ant.Main</tt> has a main method and is the primary driver for the build
+  system. It is suitable as an entrypoint for analysis.
+
 
 <a name="provided-tests"/> 
 
