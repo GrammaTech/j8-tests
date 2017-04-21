@@ -87,6 +87,39 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 * <tt>org.apache.tools.ant.Main</tt> has a main method and is the primary driver for the build
   system. It is suitable as an entrypoint for analysis.
 
+### Cassandra
+
+* [Apache Cassandra](http://cassandra.apache.org/) is a database server. 
+* It is about 300k lines of code (and about 5mb of compiled class files).
+* The source code is available at  https://git-wip-us.apache.org/repos/asf/cassandra.git. 
+  The provided jars were build with <tt>3d90bb0cc74ca52fc6a9947a746695630ca7fc2a</tt> 
+  (3.10 development branch).
+* Cassandra use lambda expressions and method references extensively.
+* <tt>org.apache.cassandra.service.CassandraDaemon</tt> has a main method and is the 
+  primary driver for the database daemon. It is suitable as an entrypoint for analysis.
+
+### Eclipse (subset)
+* [Eclipse](https://eclipse.org) is an Java development environment and IDE.
+* Eclipse as a whole is massive (and likely not suitable for analysis with many existing
+  tools), instead we exracted a very small subset (a launcher jar which is about 50k).
+* The source code is available at http://git.eclipse.org. The provided jar was pulled
+  from a binary distribution of version 4.6.
+* Eclipse uses lambda expressions and method references.
+* <tt>org.eclipse.equinox.launcher.Main</tt> has a main method and is the entry point for 
+  the launcher jar. It is suitable as an entrypoint for analysis.
+
+### OpenJDK Java8 Runtime
+
+* [OpenJDK](http://openjdk.java.net/) is an implementation of Java. A substantial part
+  of any Java implementation is the runtime library (which includes all the "builtin"
+  functionality like java.lang, java.io, java.util, etc).
+* The source code is available at http://hg.openjdk.java.net/. The provided jars were pulled
+  from a binary distribution of 1.8.0_45.
+* The Java8 runtime uses every new Java8 feature extensively (as API are often impoved to take
+  advantage of new features).
+* There is no single entry point for the Java8 runtime, and it certainly isn't suitable
+  for analysis as a whole. Instead small subsets or individual classes are typically analyzed.
+
 
 <a name="provided-tests"/> 
 
