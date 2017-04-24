@@ -174,7 +174,7 @@ pip install -U pytest
 * Get Source for the test framework
 ```bash
 git clone https://github.com/GrammaTech/j8-tests.git
-cd j8-tests/test_framework/
+cd j8-tests/
 ```
 
 * Running the system
