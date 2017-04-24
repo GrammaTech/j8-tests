@@ -21,11 +21,18 @@ public class WalaCGAdapter {
     // args == [jre path, app jar 1, ..., app jar n, entrypoint]
     public static void main(String[] args)
             throws WalaException, IllegalArgumentException, CancelException, IOException {
+            
+        // Build the class path
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < args.length - 1; i++) {
+            if(i != 1)
+                sb.append(File.pathSeparatorChar);
+            sb.append(args[i]);
+        }
 
-        // args[1] is the application jar
         AnalysisScope scope =
                 AnalysisScopeReader.makeJavaBinaryAnalysisScope(
-                        args[1], new File(CallGraphTestUtil.REGRESSION_EXCLUSIONS));
+                        sb.toString(), new File(CallGraphTestUtil.REGRESSION_EXCLUSIONS));
 
         ClassHierarchy cha = ClassHierarchyFactory.make(scope);
 
