@@ -18,7 +18,7 @@ Every tool-application pair can be tested for various kinds of functionality. Th
 
 Every test family is associated with an **IR** or intermediate representation. The idea is that every tool, when run on an application, should provide output in a standardized format appropriate to the test family. For example, for the call graph construction test family, our IR is a serialization of the call graph. Every tool requires an **adapter** for every IR; the adapter is a piece of code that runs the tool and ensures its output matches the standardized format required by the IR.
 
-Once a tool has been run on an application and we have obtained the IR (such as a call graph serialization), we run multiple **test evaluators** on this IR. Every test evaluator compares some portion of the IR against a known **ground truth** For example, a test evaluator might check if a node corresponding to method `foo()` is present in the call graph. If the test evaluator determines that the IR matches the ground truth, the appropriate test passes, otherwise it fails.
+Once a tool has been run on an application and we have obtained the IR (such as a call graph serialization), we run multiple **test evaluators** on this IR. Every test evaluator compares some portion of the IR against a known **ground truth**. For example, a test evaluator might check if a node corresponding to method `foo()` is present in the call graph. If the test evaluator determines that the IR matches the ground truth, the appropriate test passes, otherwise it fails.
 
 <a name="architecture"/>
 
@@ -67,22 +67,21 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 ### Church
 
 * 'Church' is a tiny program which implements [Church
-   numerals](https://en.wikipedia.org/wiki/Church_encoding) in Java with lambda's.
-   It was initially written as sort of a lambda torture test, since it makes
-   extensive use of lambdas with varying different forms of variable capture.
-* It is only about a hudren lines of code (and should be relative fast to 
-  analyze with most tools)
+   numerals](https://en.wikipedia.org/wiki/Church_encoding) in Java using lambdas.
+   It was initially written as a lambda torture test, since it makes
+   extensive use of lambdas with different forms of variable capture.
+* It is only about one hundred lines of code and should be relatively fast to 
+  analyze with most tools.
 * The source code (<tt>Church.java</tt>) lives alongsie the <tt>.jar</tt> in apps/church.
-* The Church class (no package) has a main method which demonstrates the various operations
-  and is a suitable entry point for analysis and should provide good coverage of all features.
+* The Church class (no package) has a main method which demonstrates the various operations. This is a suitable entry point for analysis and should provide good coverage of all features.
 
 ### Ant
 
 * [Apache Ant](http://ant.apache.org/) is a build system for Java projects.
-* It is about 200k lines of code (and about 2mb of compiled class files).
+* It is about 200K lines of code and about 2MB of compiled class files.
 * The source code is available at  https://git-wip-us.apache.org/repos/asf/ant.git. The provided 
   jars were build with <tt>193f24672b1d3f9ce11bd395b59e3ed93b5ecec6</tt> (shortly after 1.10.0).
-* The latest (1.10) version of Ant has begun requiring Java8 and they use lambda expressions 
+* The latest (1.10) version of Ant requires Java 8; the code uses lambda expressions 
   and method references.
 * <tt>org.apache.tools.ant.Main</tt> has a main method and is the primary driver for the build
   system. It is suitable as an entrypoint for analysis.
@@ -90,7 +89,7 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 ### Cassandra
 
 * [Apache Cassandra](http://cassandra.apache.org/) is a database server. 
-* It is about 300k lines of code (and about 5mb of compiled class files).
+* It is about 300K lines of code and about 5MB of compiled class files.
 * The source code is available at  https://git-wip-us.apache.org/repos/asf/cassandra.git. 
   The provided jars were built with <tt>3d90bb0cc74ca52fc6a9947a746695630ca7fc2a</tt> 
   (3.10 development branch).
@@ -99,9 +98,9 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
   primary driver for the database daemon. It is suitable as an entrypoint for analysis.
 
 ### Eclipse (subset)
-* [Eclipse](https://eclipse.org) is an Java development environment and IDE.
+* [Eclipse](https://eclipse.org) is a Java development environment and IDE.
 * Eclipse as a whole is massive (and likely not suitable for analysis with many existing
-  tools), instead we exracted a very small subset (a launcher jar which is about 50k).
+  tools. Our provided application is a small subcomponent - a launcher jar about 50KB in size.
 * The source code is available at http://git.eclipse.org. The provided jar was pulled
   from a binary distribution of version 4.6.
 * Eclipse uses lambda expressions and method references.
@@ -111,20 +110,20 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 ### OpenJDK Java8 Runtime
 
 * [OpenJDK](http://openjdk.java.net/) is an implementation of Java. A substantial part
-  of any Java implementation is the runtime library (which includes all the "builtin"
+  of any Java implementation is the runtime library (which includes all the "built-in"
   functionality like java.lang, java.io, java.util, etc).
 * The source code is available at http://hg.openjdk.java.net/. The provided jars were pulled
   from a binary distribution of 1.8.0_45.
-* The Java8 runtime uses every new Java8 feature extensively (as API are often impoved to take
-  advantage of new features).
+* The Java8 runtime uses every new Java8 feature extensively, as API are often improved to take
+  advantage of new features.
 * There is no single entry point for the Java8 runtime, and it certainly isn't suitable
   for analysis as a whole. Instead small subsets or individual classes are typically analyzed.
 
 ### Jetty
 
 * [Jetty](http://www.eclipse.org/jetty/) is a web server and servlet container.
-* It is about 450k lines of code and about 1mb of jars (but some thing are dynamically loaded
-  and weren't included in the test suite).
+* It is about 450K lines of code and about 1MB of jars. However, some components are dynamically loaded
+  and were not included in the test suite.
 * The source code is available at https://github.com/eclipse/jetty.project.git. The provided
   jars were built with <tt>0fc897233a0a83720d7d353b98224b662f152463</tt> (the 9.4.0
   development branch)
@@ -182,12 +181,10 @@ cd j8-tests/test_framework/
 ```
 python setup.py --tool <Tool1> --tool_path <path_to_tool1> --tool <Tool2> --tool_path <path_to_tool2>
 ```
-If user wishes to skip the setup, they can directly run pytest by invoking
+If the user wishes to skip the setup, they can directly run pytest by invoking
 ```
 pytest --tool <Tool1> --tool_path <path_to_tool1>
 ```
-
-This would run the all test, the tool and tool_path combination will build all adapters for the tools, and run all the test evaluation for all the applications found in src/apps directory. 
 
 <a name="extending"/>
 
@@ -212,22 +209,20 @@ When extending the test suite, add documentation to cover at least the following
   * general info such as purpose (e.g. "this is a mail server application")
   * size in MB/LOC as appropriate
   * source where it was obtained, ideally with a link
-  * rationale for inclusion in test suite (e.g. particulars on use of J8 features)
+  * rationale for inclusion in test suite (e.g. particulars on use of Java 8 features)
   * any other relevant info such as entrypoint classes for tools that require them
   
 * When adding a new IR/test family
   * a high-level description of the IR, what information it contains and why it was chosen
-  * one high-level paragraph describing the test family associated with this IR. Don't add information that is redundant wrt comments in the code, but give an overview of what we test
+  * one high-level paragraph describing the test family associated with this IR
   * a lower-level specification of the IR with examples if appropriate
-  * any info that the user would find relevant when writing an adapter (note this is NOT the place to document how to write an adapter, here just put any features unique to that specific IR that may help someone writing an adapter, such as "don't forget to print full method names including package information").
-  * any technical info relevant to a user writing new tests using this IR, e.g. libraries/APIs that may be useful in processing the IR
+  * any info about to the IR that the user would find relevant when writing an adapter
+  * any info relevant to a user writing new tests using this IR, e.g. libraries/APIs that may be useful in processing the IR
   * any ideas for future tests using this IR
   
 * When adding a new test
-  * Basic description (e.g. "check for presence of specific edges in the call graph")
-  * Motivation (features/analyses the test is addressing)
-  * Relevant info on provided ground truth, including how it was generated and why it was chosen (process and motivation)
-
-Give information on how to extend the test family
+  * basic description (e.g. "check for presence of specific edges in the call graph")
+  * motivation for test (features/analyses the test is addressing)
+  * info on provided ground truth, including how it was generated and why it was chosen (process and motivation)
 
 
