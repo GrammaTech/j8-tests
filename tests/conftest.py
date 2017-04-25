@@ -29,7 +29,7 @@ def pytest_generate_tests(metafunc):
     '''
         generate test from combinations of fixtures
     '''
-    if 'adapter' in metafunc.funcargnames:
+    if 'adapter' in metafunc.fixturenames:
         tool_list = []
         # check if the tool is passed in the cmd line opt
         # create a list of combination of tool and tool_path
