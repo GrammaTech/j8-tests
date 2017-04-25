@@ -61,6 +61,7 @@ if __name__ == "__main__":
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     # if log_output is passed to cmd line write the log to file
     if '--log_output' in sys.argv:
+        sys.argv.remove('--log_output')
         log_dir = 'log_run'
         # create a log directory
         if not os.path.exists(log_dir):

@@ -11,7 +11,7 @@ foreach(keys %tools) {
     $tools{$_} = $ENV{$u} if(exists $ENV{$u});
 }
 
-my @cmd = qw(python setup.py -v --log_output go.log);
+my @cmd = qw(python setup.py -v --log_output);
 my @k = ();
 push @cmd, map {
     if(/^\w+$/) {
