@@ -16,16 +16,6 @@ def pytest_addoption(parser):
             help="Set it to direct log output to a logfile")
     parser.addoption("--app", action="append")
 
-@pytest.fixture
-def tool(request):
-    ''' user provided tool name '''
-    return request.config.getoption("--tool")
-
-@pytest.fixture
-def tool_path(request):
-    ''' user provided tool path '''
-    return request.config.getoption("--tool_path")
-
 def pytest_namespace():
     '''
         return dict of the following variables to be made globally available,
