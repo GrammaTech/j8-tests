@@ -42,7 +42,6 @@ def xadapter(tool_name, tool_path):
 
 
 def test_callgraph(adapter,app):
-    print "adapter: " + repr(adapter) + " app: " + repr(app)
     xtest_callgraph(adapter,app)
 
 @utils.change_dir(os.path.dirname(__file__))
