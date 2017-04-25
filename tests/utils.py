@@ -62,9 +62,10 @@ def change_dir(test_dir):
             # change to test dir
             os.chdir(test_dir)
             # the test
-            func(*args, **kwargs)
+            r = func(*args, **kwargs)
             # change back
             os.chdir(cur_dir)
+            return r
         return wrapper
     return decorator
 
