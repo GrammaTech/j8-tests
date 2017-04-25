@@ -29,53 +29,44 @@ def pytest_generate_tests(metafunc):
     '''
         generate test from combinations of fixtures
     '''
-    tool_app_pair = []
-    tool_list = []
-    # check if the tool is passed in the cmd line opt
-    # create a list of combination of tool and tool_path
-    if  metafunc.config.option.tool and\
-            metafunc.config.option.tool_path:
-        # if only one tool is passed
-        if isinstance(metafunc.config.option.tool, str):
-            tool_list = [
-                metafunc.config.option.tool,
-                metafunc.config.option.tool_path
-            ]
-        # if a list of tools are passed
-        elif isinstance(metafunc.config.option.tool, list):
-            tool_list = zip(metafunc.config.option.tool,
-                metafunc.config.option.tool_path)
+    if 'adapter' in metafunc.funcargnames:
+        tool_list = []
+        # check if the tool is passed in the cmd line opt
+        # create a list of combination of tool and tool_path
+        if  metafunc.config.option.tool and\
+                metafunc.config.option.tool_path:
+            # if only one tool is passed
+            if isinstance(metafunc.config.option.tool, str):
+                tool_list = [
+                    metafunc.config.option.tool,
+                    metafunc.config.option.tool_path
+                ]
+            # if a list of tools are passed
+            elif isinstance(metafunc.config.option.tool, list):
+                tool_list = zip(metafunc.config.option.tool,
+                    metafunc.config.option.tool_path)
 
-    # read from a configuration file
-    if metafunc.config.option.conf_file:
-        try:
-            with open(metafunc.config.option.conf_file, 'r') as fread:
-                tool_list = json.load(fread)
-        except:
-            tool_list = []
-            
-    tool_list = [(a.title(),b) for (a,b) in tool_list]
+        # read from a configuration file
+        if metafunc.config.option.conf_file:
+            try:
+                with open(metafunc.config.option.conf_file, 'r') as fread:
+                    tool_list = json.load(fread)
+            except:
+                tool_list = []
+                
+        tool_list = [(a.title(),b) for (a,b) in tool_list]
+        metafunc.parametrize('adapter', tool_list, 
+            ids=[n for(n,_) in tool_list],
+            indirect=True)
 
-    # create combination of tools * apps
-    # for any function with parameter named 'comb'
-    # create a new test with entry from combination
-    if 'comb' in metafunc.funcargnames:
-        apps_list = metafunc.config.option.app
-        if not apps_list:
-            apps_list = [os.path.basename(x) for x in\
+    if 'app' in metafunc.funcargnames:
+        app_list = metafunc.config.option.app
+        if not app_list:
+            app_list = [os.path.basename(x) for x in\
                          glob.glob(os.path.join(pytest.root_dir, 'src', 'apps', '*'))]
-        elif isinstance(apps_list, str):
-            apps_list = [apps_list]
-        tool_app_pair = [tup for tup in\
-                itertools.product(tool_list, apps_list)]
-        metafunc.parametrize('comb', tool_app_pair, 
-                             ids=[tool + '_' + app 
-                                  for ((tool,path),app) in tool_app_pair])
-
-    # create a different test for every entry in tool_list
-    if 'tool_list' in metafunc.funcargnames:
-        metafunc.parametrize('tool_list', tool_list,
-                             ids=[t for (t,p) in tool_list])
+        elif isinstance(app_list, str):
+            app_list = [app_list]
+        metafunc.parametrize('app', app_list)
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):

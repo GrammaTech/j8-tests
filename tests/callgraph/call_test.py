@@ -13,11 +13,14 @@ import glob #glob.glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
-def test_adapters(tool_list):
-    xtest_adapters(tool_list)
+
+
+@pytest.fixture(scope="module")
+def adapter(request):
+    return xadapter(*request.param)
 
 @utils.change_dir(os.path.dirname(__file__))
-def xtest_adapters(tool_list):
+def xadapter(tool_name, tool_path):
     '''
         builds the adapter
         It takes the tool_path, gets the class path
@@ -25,34 +28,30 @@ def xtest_adapters(tool_list):
         in the same directory
 
     '''
-    tool_name, tool_path = tool_list
+    adapter_name = tool_name + 'CGAdapter';
     # set class path
-    classpath = utils.generate_classpath(tool_name, tool_path)
+    class_path = utils.generate_classpath(tool_name, tool_path)
     # build adaptor
-    cmd = ['javac', '-cp', classpath, tool_name + 'CGAdapter.java']
+    cmd = ['javac', '-cp', class_path, adapter_name + '.java']
     # run the adapter cmd
     _, _, returncode = utils.run_cmd(cmd)
     # check if the build passed
     assert returncode == 0
+    return (class_path, adapter_name)
+    #os.remove(glob.glob(adapter_name + "*.class"))
 
 
-def test_callgraph(comb):
-    xtest_callgraph(comb)
+def test_callgraph(adapter,app):
+    print "adapter: " + repr(adapter) + " app: " + repr(app)
+    xtest_callgraph(adapter,app)
 
 @utils.change_dir(os.path.dirname(__file__))
-def xtest_callgraph(comb):
+def xtest_callgraph(adapter,app):
     '''
         Does the callgraph test
     '''
     # setup for the test
-    tool, app = comb
-    tool_name, tool_path = tool
-
-    # get class path
-    class_path = utils.generate_classpath(tool_name, tool_path)
-    assert not class_path == None
-    # adapter
-    adapter = tool_name + 'CGAdapter'
+    class_path, adapter_name = adapter
 
     # set app path src/apps
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
@@ -82,7 +81,7 @@ def xtest_callgraph(comb):
         pytest.skip(message)
 
     # cmd for fullcg
-    cmd = ['java', '-cp', class_path, adapter, dep_path] + jar_names + [ main]
+    cmd = ['java', '-cp', class_path, adapter_name, dep_path] + jar_names + [ main]
     # generate the fullcg
     stdout, _, returncode = utils.run_cmd(cmd)
 
