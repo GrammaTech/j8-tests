@@ -1,12 +1,12 @@
-## Table of Contents
-[Overview and Terminology](#overview)
-[Architecture](#architecture)
-[Provided Applications](#provided-applications)
-[Provided Tests](#provided-tests)
-[Installing and Running our Framework](#setup)
-[Extending our Test Suite](#extending)
+## Table of Contents  
+[Overview and Terminology](#overview)  
+[Architecture](#architecture)  
+[Provided Applications](#provided-applications)  
+[Provided Tests](#provided-tests)  
+[Installing and Running our Framework](#setup)  
+[Extending our Test Suite](#extending)  
 
-<a name="overview"/>
+<a name="overview"/> 
 
 ## Overview and Terminology
 
@@ -59,7 +59,7 @@ For every **tool**/**application** pair, the system will run every **test family
 
 A typical  test evaluator starts by building an appropriate adapter. Building the adapter requires knowing the correct classpath for the tool itself, since the adapter depends on the tool. The module `tests/utils.py` serves to convert the tool path (which the user passes in) to the required classpath for adapter building. Once the adapter is built, the test evaluator generates the IR for the application and compares it to the ground truth.
 
-<a name="provided-applications"/>
+<a name="provided-applications"/> 
 
 ## Provided Applications
 
@@ -79,9 +79,9 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 
 * [Apache Ant](http://ant.apache.org/) is a build system for Java projects.
 * It is about 200K lines of code and about 2MB of compiled class files.
-* The source code is available at  https://git-wip-us.apache.org/repos/asf/ant.git. The provided
+* The source code is available at  https://git-wip-us.apache.org/repos/asf/ant.git. The provided 
   jars were build with <tt>193f24672b1d3f9ce11bd395b59e3ed93b5ecec6</tt> (shortly after 1.10.0).
-* The latest (1.10) version of Ant requires Java 8; the code uses lambda expressions
+* The latest (1.10) version of Ant requires Java 8; the code uses lambda expressions 
   and method references.
 * <tt>org.apache.tools.ant.Main</tt> has a main method and is the primary driver for the build
   system. It is suitable as an entrypoint for analysis.
@@ -193,7 +193,7 @@ pytest --tool <Tool1> --tool_path <path_to_tool1>
 ### Adding a new tool
 To add a new tool, the following steps should be taken
 * Write an adapter JAVA class for each test family
-    * The call graph adapter  [ref this](#call-graph)
+    * The call graph adapter  [this section](#call-graph)
     * The slicing adapter : TODO
 * Setup the classpath rules and dependencies
    * For every new tool the classpath are defined in tests/utils, in order for the tools to work correctly the classpath should be set
