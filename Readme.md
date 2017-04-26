@@ -1,12 +1,12 @@
 ## Table of Contents
-[Overview and Terminology](#overview)   
-[Architecture](#architecture)     
-[Provided Applications](#provided-applications)    
-[Provided Tests](#provided-tests)  
-[Installing and Running our Framework](#setup)  
-[Extending our Test Suite](#extending)  
+[Overview and Terminology](#overview)
+[Architecture](#architecture)
+[Provided Applications](#provided-applications)
+[Provided Tests](#provided-tests)
+[Installing and Running our Framework](#setup)
+[Extending our Test Suite](#extending)
 
-<a name="overview"/> 
+<a name="overview"/>
 
 ## Overview and Terminology
 
@@ -53,13 +53,13 @@ The `src/apps` directory contains the applications and ground truth for each app
 
 The `src/dependencies` subdirectory contains versions of the java libraries (`rt.jar`) used to generate the ground truth. If the tools and adapters are run on different versions of `rt.jar`, different results may be produced, resulting in spurious test failures. This directory is also the right place to add any dependencies required by the adapters.
 
-The `tests` directory contains all material relevant to running individual tests. The high level workflow is that the user passes in a number of **tools** on the command line. For every tool, the user also passes in a **tool path** where the tool can be found (see examples [in this section](#setup)). At this point, the framework uses [fixture parametrization](https://docs.pytest.org/en/latest/parametrize.html) to pair up every tool with every **application**. The pairing up is accomplished in file `tests/conftest.py`. 
+The `tests` directory contains all material relevant to running individual tests. The high level workflow is that the user passes in a number of **tools** on the command line. For every tool, the user also passes in a **tool path** where the tool can be found (see examples [in this section](#setup)). At this point, the framework uses [fixture parametrization](https://docs.pytest.org/en/latest/parametrize.html) to pair up every tool with every **application**. The pairing up is accomplished in file `tests/conftest.py`.
 
 For every **tool**/**application** pair, the system will run every **test family**. Every test family is associated with a subdirectory under `tests`, for example `tests/callgraph`. This subdirectory contains **adapters** and **test evaluators** for the test family.
 
 A typical  test evaluator starts by building an appropriate adapter. Building the adapter requires knowing the correct classpath for the tool itself, since the adapter depends on the tool. The module `tests/utils.py` serves to convert the tool path (which the user passes in) to the required classpath for adapter building. Once the adapter is built, the test evaluator generates the IR for the application and compares it to the ground truth.
 
-<a name="provided-applications"/> 
+<a name="provided-applications"/>
 
 ## Provided Applications
 
@@ -70,7 +70,7 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
    numerals](https://en.wikipedia.org/wiki/Church_encoding) in Java using lambdas.
    It was initially written as a lambda torture test, since it makes
    extensive use of lambdas with different forms of variable capture.
-* It is only about one hundred lines of code and should be relatively fast to 
+* It is only about one hundred lines of code and should be relatively fast to
   analyze with most tools.
 * The source code (<tt>Church.java</tt>) lives alongsie the <tt>.jar</tt> in apps/church.
 * The Church class (no package) has a main method which demonstrates the various operations. This is a suitable entry point for analysis and should provide good coverage of all features.
@@ -79,22 +79,22 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 
 * [Apache Ant](http://ant.apache.org/) is a build system for Java projects.
 * It is about 200K lines of code and about 2MB of compiled class files.
-* The source code is available at  https://git-wip-us.apache.org/repos/asf/ant.git. The provided 
+* The source code is available at  https://git-wip-us.apache.org/repos/asf/ant.git. The provided
   jars were build with <tt>193f24672b1d3f9ce11bd395b59e3ed93b5ecec6</tt> (shortly after 1.10.0).
-* The latest (1.10) version of Ant requires Java 8; the code uses lambda expressions 
+* The latest (1.10) version of Ant requires Java 8; the code uses lambda expressions
   and method references.
 * <tt>org.apache.tools.ant.Main</tt> has a main method and is the primary driver for the build
   system. It is suitable as an entrypoint for analysis.
 
 ### Cassandra
 
-* [Apache Cassandra](http://cassandra.apache.org/) is a database server. 
+* [Apache Cassandra](http://cassandra.apache.org/) is a database server.
 * It is about 300K lines of code and about 5MB of compiled class files.
-* The source code is available at  https://git-wip-us.apache.org/repos/asf/cassandra.git. 
-  The provided jars were built with <tt>3d90bb0cc74ca52fc6a9947a746695630ca7fc2a</tt> 
+* The source code is available at  https://git-wip-us.apache.org/repos/asf/cassandra.git.
+  The provided jars were built with <tt>3d90bb0cc74ca52fc6a9947a746695630ca7fc2a</tt>
   (3.10 development branch).
 * Cassandra use lambda expressions and method references extensively.
-* <tt>org.apache.cassandra.service.CassandraDaemon</tt> has a main method and is the 
+* <tt>org.apache.cassandra.service.CassandraDaemon</tt> has a main method and is the
   primary driver for the database daemon. It is suitable as an entrypoint for analysis.
 
 ### Eclipse (subset)
@@ -104,7 +104,7 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 * The source code is available at http://git.eclipse.org. The provided jar was pulled
   from a binary distribution of version 4.6.
 * Eclipse uses lambda expressions and method references.
-* <tt>org.eclipse.equinox.launcher.Main</tt> has a main method and is the entry point for 
+* <tt>org.eclipse.equinox.launcher.Main</tt> has a main method and is the entry point for
   the launcher jar. It is suitable as an entrypoint for analysis.
 
 ### OpenJDK Java8 Runtime
@@ -128,14 +128,14 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
   jars were built with <tt>0fc897233a0a83720d7d353b98224b662f152463</tt> (the 9.4.0
   development branch)
 * Jetty uses lambda expressions and method references.
-* <tt>org.eclipse.jetty.start.Main</tt> has a main method and is the primary driver for the 
+* <tt>org.eclipse.jetty.start.Main</tt> has a main method and is the primary driver for the
   server.
 
-<a name="provided-tests"/> 
+<a name="provided-tests"/>
 
 ## Provided Test Families and Tests
 
-### Call Graph 
+### Call Graph
 
 #### IR
 
@@ -191,14 +191,35 @@ pytest --tool <Tool1> --tool_path <path_to_tool1>
 ## Extending the test suite
 
 ### Adding a new tool
-* How to write adapter
+To add a new tool, the following steps should be taken
+* Write an adapter JAVA class for each test family
+    * The call graph adapter  [ref this](#call-graph)
+    * The slicing adapter : TODO
+* Setup the classpath rules and dependencies
+   * For every new tool the classpath are defined in tests/utils, in order for the tools to work correctly the classpath should be set
+
 
 ### Adding a new application jar
-* Should be easy, only need ground truth
+To add a new application jar, the following steps should be taken
+* create a folder to host the jar files under src/apps directory
+* put the jar file here
+* create file with name as main, the first line of the file states the main class for the jar
+* Add jar related ground truth needed for tests here
+    * for example, call graph test uses known ground truth for evaluation
+
 
 ### Adding a new test metric/evaluator
+There are three types of evaluator to be added
+* Evaluator to test for the adapter, this would check if the adapter can be compiled
+* A new test extension to use existing adapter/IR
+    * Any new test will have the signature test_foo(adapter, app), this ensures test is called
+    * The test must follow pytest rule of assert based testing, that is assert to test
+* Add a new test family
+    * All the test family should be under test directory
 
-### Adding a new IR 
+
+### Adding a new IR
+
 * Will need adapters for every tool and new test evaluators
 
 ### Documentation guidelines
@@ -211,7 +232,7 @@ When extending the test suite, add documentation to cover at least the following
   * source where it was obtained, ideally with a link
   * rationale for inclusion in test suite (e.g. particulars on use of Java 8 features)
   * any other relevant info such as entrypoint classes for tools that require them
-  
+
 * When adding a new IR/test family
   * a high-level description of the IR, what information it contains and why it was chosen
   * one high-level paragraph describing the test family associated with this IR
@@ -219,7 +240,7 @@ When extending the test suite, add documentation to cover at least the following
   * any info about to the IR that the user would find relevant when writing an adapter
   * any info relevant to a user writing new tests using this IR, e.g. libraries/APIs that may be useful in processing the IR
   * any ideas for future tests using this IR
-  
+
 * When adding a new test
   * basic description (e.g. "check for presence of specific edges in the call graph")
   * motivation for test (features/analyses the test is addressing)
