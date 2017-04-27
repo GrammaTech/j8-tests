@@ -219,26 +219,29 @@ If you are adding either a new IR/test family or a new tool and need to create a
     * One or more paths to application jars
     * The name of the main class in the application, i.e., the class that contains <tt>main(String[] args)</tt>  and should be used as an entrypoint for analysis
   * When invoked, the adapter should emit the IR on stderr, and exit 0 (on success).
+* Add a test to wrap the adapter compilation in the file <tt>/tests/&lt;family&gt;/adapter_test.py</tt> as seen in (TODO add example). This ensures that the adapter is actually built before we attempt to run any tests. If adapter compilation fails, pytests will not run any tests for that adapter. For correctness, the test for adapter compilation must be the first test in the file (TODO verify this is accurate)
 
 ### Adding a new application jar
 To add a new application jar, you should:
 * Create a subdirectory of `src/apps` and place the application jar file(s) there, including all jars necessary to compile and run the adapter.
 * Create <tt>src/apps/&lt;app&gt;/main&gt;</tt>, a plain text file whose sole contents is the
   name of the main class, i.e.,the class that contains <tt>main(String[] args)</tt>  and should be used as an entrypoint for analysis.
-* Add ground truth for one or more test families. The ground truth lives in
-  in the directory for each individual test family <tt>tests/&lt;family&gt;</tt>
-  usually named <tt>&lt;prefix&gt;_&lt;app&gt;</tt>.
+* Add ground truth for one or more test families in <tt>src/apps/&lt;app&gt;/ground_truth</tt>. The ground truth file should be named <tt>&lt;family&gt;_&lt;testid&gt;</tt>, where `family` is the name of the test family and `testid` is the name/identifier of an individual test in the test family.
 
 
 ### Adding a new test/test evaluator
-There are three types of evaluator to be added
-* Evaluator to test for the adapter, this would check if the adapter can be compiled
-* A new test extension to use existing adapter/IR
-    * Any new test will have the signature test_foo(adapter, app), this ensures test is called
-    * The test must follow pytest rule of assert based testing, that is assert to test
-* Add a new test family
-    * All the test family should be under test directory
+To add a new test to an existing test family, you should:
+* Create a test evaluator in <tt>/tests/&lt;family&gt;</tt>. The test evaluator can be in a new file or added as a new test function into an existing test file for the appropriate family. However, do not pollute the file <tt>/tests/&lt;family&gt;/adapter_test.py</tt> by adding "real" tests there; this file should only contain the test for adapter compilation
+* The test name and signature should follow the pattern below, where `family` is the name of the test family and `testid` is the name/identifier of the individual test.
+```
+def test_family_testid(adapter,app):
+    xtest_family_testid(adapter,app)
 
+@utils.change_dir(os.path.dirname(__file__))
+def xtest_family_test_id(adapter,app):
+```
+* TODO link to examples of test evaluators
+* The test must follow the pytest pattern of [assert based testing](https://docs.pytest.org/en/latest/assert.html)
 
 ### Adding a new IR/test family
 
