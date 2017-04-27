@@ -1,8 +1,9 @@
 ## Table of Contents  
 [Overview and Terminology](#overview)  
 [Architecture](#architecture)  
+[Supported Tools and Provided Adapters](#provided-adapters)
 [Provided Applications](#provided-applications)  
-[Provided Tests](#provided-tests)  
+[Provided Tests](#provided-tests)
 [Installing and Running our Framework](#setup)  
 [Extending our Test Suite](#extending)  
 
@@ -12,13 +13,13 @@
 
 This system provides a test suite to assess Java 8 support in a number of popular bytecode analysis tools. The suite comes with existing tests but is also extensible as described in [this section](#extending).
 
-We first give a high-level overview of our system and define some relevant terminology. A **tool** is a bytecode analysis tool; some example tools are WALA and Soot. An **application** is a jar file; the tools will analyze the bytecode contained in the applications.
+We first give a high-level overview of our system and define some relevant terminology. A **tool** is a bytecode analysis tool; some example tools are [Soot](https://sable.github.io/soot/) and [WALA](http://wala.sourceforge.net/wiki/index.php/Main_Page). Our test suite does not include tools; we expect that the user has tools available on their system and wishes to run our test suite on those tools. An **application** is a jar file; the tools will analyze the bytecode contained in the applications. 
 
 Every tool-application pair can be tested for various kinds of functionality. Therefore, we have a notion of **test families**. A test family is a grouping of tests which test related functionality. Some examples of test families are tests for call graph construction and tests for slicing.
 
 Every test family is associated with an **IR** or intermediate representation. The idea is that every tool, when run on an application, should provide output in a standardized format appropriate to the test family. For example, for the call graph construction test family, our IR is a serialization of the call graph. Every tool requires an **adapter** for every IR; the adapter is a piece of code that runs the tool and ensures its output matches the standardized format required by the IR.
 
-Once a tool has been run on an application and we have obtained the IR (such as a call graph serialization), we run multiple **test evaluators** on this IR. Every test evaluator compares some portion of the IR against a known **ground truth**. For example, a test evaluator might check if a node corresponding to method `foo()` is present in the call graph. If the test evaluator determines that the IR matches the ground truth, the appropriate test passes, otherwise it fails.
+Once a tool has been run on an application and we have obtained the IR (such as a call graph serialization), we run multiple **tests** on this IR. Every test is associated with a **test evaluator** that compares the IR against a known **ground truth**. For example, a test evaluator might check if a node corresponding to method `foo()` is present in the call graph. If the test evaluator determines that the IR matches the ground truth, the appropriate test passes, otherwise it fails.
 
 <a name="architecture"/>
 
@@ -58,6 +59,12 @@ The `tests` directory contains all material relevant to running individual tests
 For every **tool**/**application** pair, the system will run every **test family**. Every test family is associated with a subdirectory under `tests`, for example `tests/callgraph`. This subdirectory contains **adapters** and **test evaluators** for the test family.
 
 A typical  test evaluator starts by building an appropriate adapter. Building the adapter requires knowing the correct classpath for the tool itself, since the adapter depends on the tool. The module `tests/utils.py` serves to convert the tool path (which the user passes in) to the required classpath for adapter building. Once the adapter is built, the test evaluator generates the IR for the application and compares it to the ground truth.
+
+<a name="provided-adapters"/> 
+
+## Supported tools and provided adapters
+
+TODO add information here on the adapters we provide (list of tool/adapter pairs in some suitable format; for every tool, list the version we tested with.)
 
 <a name="provided-applications"/> 
 
@@ -99,7 +106,7 @@ A typical  test evaluator starts by building an appropriate adapter. Building th
 
 ### Eclipse (subset)
 * [Eclipse](https://eclipse.org) is a Java development environment and IDE.
-* Eclipse as a whole is massive (and likely not suitable for analysis with many existing
+* Eclipse as a whole is massive and likely not suitable for analysis with many existing
   tools. Our provided application is a small subcomponent - a launcher jar about 50KB in size.
 * The source code is available at http://git.eclipse.org. The provided jar was pulled
   from a binary distribution of version 4.6.
@@ -190,49 +197,40 @@ pytest --tool <Tool1> --tool_path <path_to_tool1>
 
 ## Extending the test suite
 
+All the terminology in this section is defined in [the overview section](#overview).
+
 ### Adding a new tool
-To add a new tool, the following steps should be taken:
-* Write an adapter (see below), which is a small Java class which interfaces
-  between the testing infrastructure and the tool itself for one or more
-  test families.
-    * The call graph adapter  [this section](#call-graph)
-    * The slicing adapter : TODO
-* Setup the classpath rules and dependencies
-   * The classpath for each tool is defined in <tt>tests/utils.py</tt>, in the function
-     <tt>generate_classpath</tt> which takes the tool name and user provided
-     path to the sandbox. This function should make a classpath suitable for
-     compiling and running the adapter relative to the "root" of the
-     installation provided by the user.
+If you wish to test a new tool with our test suite, you should:
+* Write an adapter for each of the existing test families that you wish to apply to your tool. Relevant info for writing adapters for the existing IRs is as follows:
+    * Call graph adapter  [this section](#call-graph)
+    * Slicing adapter : TODO
+* Set up the classpath rules and dependencies
+   * The classpath for each tool is defined in [`tests/utils.py`](https://github.com/GrammaTech/j8-tests/blob/master/tests/utils.py), in the function `generate_classpath`. This function takes as input the tool name and the path (location) where the tool is installed, and generates a classpath suitable for compiling and running the adapter relative to the root of the user's installation. See the existing  `generate_classpath` function for examples.
 
 ### Adding a new adapter
-To add a new adapter (an interface between a tool and the testing system,
-which generates an IR), the following steps should be taken:
-* Write a Java class, which uses the tool (often using it like a library) to
-  produce the IR for the test family the adapter is providing an interface
-  for.
-  * The class should live in
+If you are adding either a new IR/test family or a new tool and need to create a new adapter, you should:
+* Write a Java class that uses the tool to produce the desired IR. Typically the adapter will use the tool as though it were a library.
+  * The adapter should be named 
     <tt>tests/&lt;family&gt;/&lt;tool&gt;&lt;prefix&gt;.java</tt>
     where prefix is some short family specific identifier (like CG for call
     graph)
-  * It should provide a main method which takes the following arguments:
-    * The path to the testing system provided java runtime jars.
+  * The adapter should provide a main method which takes the following arguments:
+    * The path to the java runtime jars. This path will be provided by the testing system
     * One or more paths to application jars
-    * Finally, the name of the main class.
-  * When invoked, it should emit the IR on stderr, and exit 0 (on success).
+    * The name of the main class in the application, i.e., the class that contains <tt>main(String[] args)</tt>  and should be used as an entrypoint for analysis
+  * When invoked, the adapter should emit the IR on stderr, and exit 0 (on success).
 
 ### Adding a new application jar
-To add a new application jar, the following steps should be taken:
-* Create a folder to host the jar files under src/apps directory
-* Add all jars necessary to compile and run the adapter.
-* Create <tt>src/apps/&lt;app&gt;/main&gt;</tt>, a pain text file whose sole contents is the
-  name of the name of 'Main' class (the class containing the <tt>main(String[] args)</tt> 
-  entry point.
+To add a new application jar, you should:
+* Create a subdirectory of `src/apps` and place the application jar file(s) there, including all jars necessary to compile and run the adapter.
+* Create <tt>src/apps/&lt;app&gt;/main&gt;</tt>, a plain text file whose sole contents is the
+  name of the main class, i.e.,the class that contains <tt>main(String[] args)</tt>  and should be used as an entrypoint for analysis.
 * Add ground truth for one or more test families. The ground truth lives in
   in the directory for each individual test family <tt>tests/&lt;family&gt;</tt>
   usually named <tt>&lt;prefix&gt;_&lt;app&gt;</tt>.
 
 
-### Adding a new test metric/evaluator
+### Adding a new test/test evaluator
 There are three types of evaluator to be added
 * Evaluator to test for the adapter, this would check if the adapter can be compiled
 * A new test extension to use existing adapter/IR
@@ -242,20 +240,17 @@ There are three types of evaluator to be added
     * All the test family should be under test directory
 
 
-### Adding a new IR
+### Adding a new IR/test family
 
-* A 'IR' is a way for a tool to communicate with the test
-  infrastructure. It is emitted by an adapter (see above) and evaluated by
-  the evaluator. A well designed IR should be tool independent, and
-  communicate enough information to verify multiple properties of the tool.
-* Adding an 'IR' amounts to writing a new adapter for one or more tools (see
-  above) and writing an evaluator (also see above) for some property of that
-  IR.
+To add a new test family and associated IR, you should:
+* Design the IR carefully so that it is tool-independent and contains enough information to verify multiple properties of the tool
+* Add an adapter for one or more tools and the new IR, as explained above
+* Add one or more tests/test evaluators, as explained above
 
 
 ### Documentation guidelines
 
-When extending the test suite, add documentation to cover at least the following details.
+When extending the test suite, add to this README documentation that covers at least the following details.
 
 * When adding a new application
   * general info such as purpose (e.g. "this is a mail server application")
