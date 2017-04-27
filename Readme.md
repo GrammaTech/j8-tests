@@ -191,21 +191,45 @@ pytest --tool <Tool1> --tool_path <path_to_tool1>
 ## Extending the test suite
 
 ### Adding a new tool
-To add a new tool, the following steps should be taken
-* Write an adapter JAVA class for each test family
+To add a new tool, the following steps should be taken:
+* Write an adapter (see below), which is a small Java class which interfaces
+  between the testing infrastructure and the tool itself for one or more
+  test families.
     * The call graph adapter  [this section](#call-graph)
     * The slicing adapter : TODO
 * Setup the classpath rules and dependencies
-   * For every new tool the classpath are defined in tests/utils, in order for the tools to work correctly the classpath should be set
+   * The classpath for each tool is defined in <tt>tests/utils.py</tt>, in the function
+     <tt>generate_classpath</tt> which takes the tool name and user provided
+     path to the sandbox. This function should make a classpath suitable for
+     compiling and running the adapter relative to the "root" of the
+     installation provided by the user.
 
+### Adding a new adapter
+To add a new adapter (an interface between a tool and the testing system,
+which generates an IR), the following steps should be taken:
+* Write a Java class, which uses the tool (often using it like a library) to
+  produce the IR for the test family the adapter is providing an interface
+  for.
+  * The class should live in
+    <tt>tests/&lt;family&gt;/&lt;tool&gt;&lt;prefix&gt;</tt>.java</tt>
+    where prefix is some short family specific identifier (like CG for call
+    graph)
+  * It should provide a main method which takes the following arguments:
+    * The path to the testing system provided java runtime jars.
+    * One or more paths to application jars
+    * Finally, the name of the main class.
+  * When invoked, it should emit the IR on stderr, and exit 0 (on success).
 
 ### Adding a new application jar
-To add a new application jar, the following steps should be taken
-* create a folder to host the jar files under src/apps directory
-* put the jar file here
-* create file with name as main, the first line of the file states the main class for the jar
-* Add jar related ground truth needed for tests here
-    * for example, call graph test uses known ground truth for evaluation
+To add a new application jar, the following steps should be taken:
+* Create a folder to host the jar files under src/apps directory
+* Add all jars necessary to compile and run the adapter.
+* Create <tt>src/apps/&lt;app>main&gt;</tt>, a pain text file whose sole contents is the
+  name of the name of 'Main' class (the class containing the <tt>main(String[] args)</tt> 
+  entry point.
+* Add ground truth for one or more test families. The ground truth lives in
+  in the directory for each individual test family <tt>tests/&lt;family&gt;</tt>
+  usually named <tt>&lt;prefix&gt;_&lt;ap&gt;</tt>.
 
 
 ### Adding a new test metric/evaluator
@@ -220,7 +244,14 @@ There are three types of evaluator to be added
 
 ### Adding a new IR
 
-* Will need adapters for every tool and new test evaluators
+* A 'IR' is a way for a tool to communicate with the test
+  infrastructure. It is emitted by an adapter (see above) and evaluated by
+  the evaluator. A well designed IR should be tool independent, and
+  communicate enough information to verify multiple properties of the tool.
+* Adding an 'IR' amounts to writing a new adapter for one or more tools (see
+  above) and writing an evaluator (also see above) for some property of that
+  IR.
+
 
 ### Documentation guidelines
 
