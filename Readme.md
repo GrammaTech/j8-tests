@@ -211,7 +211,7 @@ which generates an IR), the following steps should be taken:
   produce the IR for the test family the adapter is providing an interface
   for.
   * The class should live in
-    <tt>tests/&lt;family&gt;/&lt;tool&gt;&lt;prefix&gt;</tt>.java</tt>
+    <tt>tests/&lt;family&gt;/&lt;tool&gt;&lt;prefix&gt;.java</tt>
     where prefix is some short family specific identifier (like CG for call
     graph)
   * It should provide a main method which takes the following arguments:
@@ -224,12 +224,12 @@ which generates an IR), the following steps should be taken:
 To add a new application jar, the following steps should be taken:
 * Create a folder to host the jar files under src/apps directory
 * Add all jars necessary to compile and run the adapter.
-* Create <tt>src/apps/&lt;app>main&gt;</tt>, a pain text file whose sole contents is the
+* Create <tt>src/apps/&lt;app&gt;/main&gt;</tt>, a pain text file whose sole contents is the
   name of the name of 'Main' class (the class containing the <tt>main(String[] args)</tt> 
   entry point.
 * Add ground truth for one or more test families. The ground truth lives in
   in the directory for each individual test family <tt>tests/&lt;family&gt;</tt>
-  usually named <tt>&lt;prefix&gt;_&lt;ap&gt;</tt>.
+  usually named <tt>&lt;prefix&gt;_&lt;app&gt;</tt>.
 
 
 ### Adding a new test metric/evaluator
