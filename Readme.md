@@ -1,9 +1,9 @@
 ## Table of Contents  
 [Overview and Terminology](#overview)  
 [Architecture](#architecture)  
-[Supported Tools and Provided Adapters](#provided-adapters)
-[Provided Applications](#provided-applications)  
-[Provided Tests](#provided-tests)
+[Supported Tools and Provided Adapters](#provided-adapters)   
+[Provided Applications](#provided-applications)    
+[Provided Tests](#provided-tests)   
 [Installing and Running our Framework](#setup)  
 [Extending our Test Suite](#extending)  
 
@@ -58,13 +58,13 @@ The `tests` directory contains all material relevant to running individual tests
 
 For every **tool**/**application** pair, the system will run every **test family**. Every test family is associated with a subdirectory under `tests`, for example `tests/callgraph`. This subdirectory contains **adapters** and **test evaluators** for the test family.
 
-A typical  test evaluator starts by building an appropriate adapter. Building the adapter requires knowing the correct classpath for the tool itself, since the adapter depends on the tool. The module `tests/utils.py` serves to convert the tool path (which the user passes in) to the required classpath for adapter building. Once the adapter is built, the test evaluator generates the IR for the application and compares it to the ground truth.
+A typical test evaluator starts by building an appropriate adapter. Building the adapter requires knowing the correct classpath for the tool itself, since the adapter depends on the tool. The function `generate_classpath` in module [`tests/utils.py`](https://github.com/GrammaTech/j8-tests/blob/master/tests/utils.py) converts user-provided information about the tool name and installation location to a classpath which is required for adapter building. Once the adapter is built, the test evaluator generates the IR for the application and compares it to the ground truth.
 
 <a name="provided-adapters"/> 
 
-## Supported tools and provided adapters
+## Supported Tools and Provided Adapters
 
-TODO add information here on the adapters we provide (list of tool/adapter pairs in some suitable format; for every tool, list the version we tested with.)
+TODO add information here on the adapters we provide (list of tool/adapter pairs in some suitable format; for every tool, list the version we tested with.) 
 
 <a name="provided-applications"/> 
 
