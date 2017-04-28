@@ -40,7 +40,7 @@ def xtest_callgraph(adapter,app):
     assert not main == None, main
 
     # ground truth
-    expected = os.path.join(app_path, 'callgraph_expected')
+    expected = os.path.join(app_path, 'groundtruth', 'callgraph_expected')
 
     # skip  the test if the ground truth doesn't exists
     # using imperative skip option
