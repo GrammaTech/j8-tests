@@ -1,37 +1,37 @@
 """
     Main driver program for test framework.
-    This checks system prerequisites and then calls the pytest
+    This checks system prerequisites and then calls pytest
     Any command line arguments are passed to pytest
     Usage : python setup.py --tool --tool_path
 """
 
 import sys
 import os
-import subprocess # call, Popen
-import logging # logging
-import time # strftime
+import subprocess
+import logging
+import time
 import pytest
 
 def run_check(logger):
     '''
-        run various checks
-        1) operating system is Linux
+        Run various checks
+        1) Operating system is Linux
         2) Java 8 is installed
-        3) python version 2.7 or greater is installed
+        3) Python version 2.7 or greater is installed
     '''
-    # work on Linux only
+    # check if operating system is Linux
     if not sys.platform.startswith('linux'):
         sys.exit('Error : Test suite only compatible with\
                 Linux operating system')
 
-    # check if python 2.7 and greater
+    # check if at least python 2.7
     status = sys.version_info >= (2, 7)
     version = str(sys.version_info.major) + '.' + str(sys.version_info.minor)
     if not status:
         sys.exit('Error : python version atleast 2.7 not found')
     logger.info('python version found %s ' % version)
 
-    # check for Java && Java 8
+    # check if Java is installed
     try:
         proc = subprocess.Popen(['java', '-version'],\
                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -39,7 +39,7 @@ def run_check(logger):
         # byte to str
         stderr = stderr.decode("utf-8")
         stdout = stdout.decode("utf-8")
-        # check for Java 8
+        # check if Java version is 8
         try:
             version = stderr.split('\n')[0].split(" ")[2]
             logger.info('Java version found %s' % version)
@@ -48,22 +48,20 @@ def run_check(logger):
         except:
             logger.error(sys.exc_info())
             sys.exit('Error : Java 8 not found')
-
     except:
         logger.error(sys.exc_info())
         sys.exit('Error : Java not found')
 
-
 if __name__ == "__main__":
-    # set logging
+    # configure logging
     logger = logging.getLogger('JAVA8_Tests')
     logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    # if log_output is passed to cmd line write the log to file
+    # use file_hander for logging if --log_output flag is set
     if '--log_output' in sys.argv:
         sys.argv.remove('--log_output')
         log_dir = 'log_run'
-        # create a log directory
+        # create a logging directory
         if not os.path.exists(log_dir):
             os.mkdir(log_dir)
         # use timestamp as the name of the log file
@@ -79,9 +77,10 @@ if __name__ == "__main__":
         ch.setFormatter(formatter)
         # add the handlers to the logger
         logger.addHandler(ch)
-    # system requirement
+
     logger.info('Running System Check')
+    # check system requirements
     run_check(logger)
-    # call pytest, use '.' to run in current directory
+    # call pytest in current directory using '.'
     sys.argv.extend('.');
     pytest.main(sys.argv[1:])

@@ -1,6 +1,6 @@
 """
-Following Utilities for running test
-1) Generate appropriate classpath from tool path
+Utilities for running tests:
+1) Generate classpath for tool
 2) Decorator to change directory
 """
 import os
@@ -12,15 +12,14 @@ import sys
 
 def generate_classpath(tool_name, tool_path):
     '''
-        For a given tool_path, return the appropriate Java classpath. This
-        information varies by tool and we need it to build adapters."
-        @tool : tool name, match case
-        @tool_path : path where tool is compiled
+        Return the appropriate Java classpath for building adapters
+        @tool : tool name, case sensitive
+        @tool_path : directory where tool has been built/installed
     '''
     if tool_name == 'Wala':
-        # list of wala packages
+        # list of WALA packages
         prj = ['core.tests', 'core', 'shrike', 'util']
-        # join them with tool_path
+        # join the packages with tool_path
         classpath = ".:" + ":".join([os.path.join(tool_path,\
                 'com.ibm.wala.' +  pt, 'target/classes')\
                 for pt in prj])
@@ -37,34 +36,33 @@ def generate_classpath(tool_name, tool_path):
         # combined classpath
         classpath = ".:" + ":".join(dep + cp_soot)
         return classpath
-        
+
     if tool_name == 'Accrue':
-        return ":".join([
+        # set classpath
+        classpath = ":".join([
             ".",
             os.path.join(tool_path, 'target/classes'),
             os.path.join(tool_path, 'target/dependency/*')
             ])
+        return classpath
 
-
-def change_dir(test_dir):
+def change_dir(target_dir):
     '''
-    A decorator to change to test directory, run tests and
-    change to current directory
-    The test adapters are compiled in same directory as the test evaluators
+    This decorator does the following:
+    1) Change to target directory
+    2) Execute the callee function
+    3) Change back to last working directory
+    @target_dir : target directory
     '''
     def decorator(func):
         ''' main decorator'''
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             ''' inner wrapper '''
-            # cur dir
-            cur_dir = os.getcwd()
-            # change to test dir
-            os.chdir(test_dir)
-            # the test
+            current_dir = os.getcwd()
+            os.chdir(target_dir)
             r = func(*args, **kwargs)
-            # change back
-            os.chdir(cur_dir)
+            os.chdir(current_dir)
             return r
         return wrapper
     return decorator
@@ -76,14 +74,15 @@ def get_logger():
 
 def run_cmd(cmd):
     '''
-        Use the subprocess to execute a shell command
-        This would return stdout, stderr and return code
-        User should use this interface to run as it logs the error
+        Use subprocess module to execute a shell command
+        This will return stdout, stderr and shell return code
+        This interface supports logging
     '''
-    # log to file when error
+    # log errors
     logger = get_logger()
+    # default logging handler is console, skip logging
     use_logger = False
-    # log only to file
+    #  check if logging handler is file, use logging
     if len(logger.handlers) > 0 and\
         isinstance(logger.handlers[0], logging.FileHandler):
         use_logger = True
@@ -100,7 +99,7 @@ def run_cmd(cmd):
             use_logger:
             logger.debug(stdout)
             logger.debug(stderr)
-    # in case of error set everything null
+    # in case of error set everything to None
     except:
         returncode = -1
         stdout = None
