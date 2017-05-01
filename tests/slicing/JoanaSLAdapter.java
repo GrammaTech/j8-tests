@@ -33,8 +33,11 @@ public class JoanaSLAdapter {
         
         Main.Config cfg = new Main.Config(
             "Test Adapter",
+            // (entry point is a method, not a class, so we tack on main)
             args[args.length - 1] + ".main([Ljava/lang/String;)V",
             sb.toString(),
+            SDGBuilder.PointsToPrecision.TYPE_BASED, // 0-CFA
+            // FieldPropagation.FLAT is what MainGUI::RunSDG does by default...
             SDGBuilder.FieldPropagation.FLAT);
         Pair<SDG, SDGBuilder> cons = Main.computeAndKeepBuilder(
             System.err, 
@@ -42,12 +45,15 @@ public class JoanaSLAdapter {
             false, 
             NullProgressMonitor.INSTANCE);
             
-        
+        // We're using a vanilla context insensitive backwards slicer
+        // (TODO: Check other slicing algorithms?)
         Slicer slicer = new ContextInsensitiveBackward(cons.fst);
         
+        // Read though each query (on standard input)
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = br.readLine()) != null) {
+            // Split on " -> " (which separates the source and the target)
             int p = line.indexOf(" -> ");
             Object res;
             if (p == -1) {
@@ -55,8 +61,11 @@ public class JoanaSLAdapter {
                 continue;
             }
             try {
+                // Convert each node descriptor (class signature + formal no) to an
+                // SDGNode
                 SDGNode src = desc2node(cons, line.substring(0, p));
                 SDGNode dst = desc2node(cons, line.substring(p + 4));
+                // Slice back from dst, and check if src is in the slice
                 Collection<SDGNode> slice = slicer.slice(dst);
                 res = slice.contains(src);
             } catch (Exception e) {
@@ -73,6 +82,7 @@ public class JoanaSLAdapter {
         CallGraph cg = cons.snd.getWalaCallGraph();
         int p, q;
 
+        // Break apart the descriptor string (class(method_sig):formal_no)
         p = desc.indexOf('(');
         if (p == -1) throw new IllegalArgumentException();
         q = desc.indexOf(':');
@@ -84,14 +94,24 @@ public class JoanaSLAdapter {
         String klass = desc.substring(0, q);
         String method = desc.substring(q + 1, p);
 
+        // Lookup the WALA CGNode for the method
         TypeReference t =
                 TypeReference.findOrCreate(
                         ClassLoaderReference.Application, "L" + klass.replace('.', '/'));
         MethodReference m = MethodReference.findOrCreate(t, method, sig);
         Set<CGNode> nodes = cg.getNodes(m);
+        // PointsToPrecision.TYPE_BASED is context insensitive, but if we
+        // have a context sensitive call graph we'll need to handle it here
+        // (probblay by returning a Set<SDGNode>
+        if(nodes.size() != 1)
+            throw new UnsupportedOperationException("context sensitivity not supported");
         CGNode node = nodes.iterator().next(); /* XXX context sensitivity? */
+        
+        // Find the PDG for this method (cons.snd == SDGBuilder)
         PDG pdg = cons.snd.getPDGforMethod(node);
 
+        // Finally, get the PDGNode for the forma, then lookup the
+        // corresponding SDGNode (con.fst == SDG)
         return cons.fst.getNode(pdg.params[formal_no].getId());
     }
 }

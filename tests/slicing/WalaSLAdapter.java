@@ -49,9 +49,11 @@ public class WalaSLAdapter {
 
         PointerAnalysis pa = builder.getPointerAnalysis();
 
+        // Read though each query (on standard input)
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = br.readLine()) != null) {
+            // Split on " -> " (which separates the source and the target)
             int p = line.indexOf(" -> ");
             Object res;
             if (p == -1) {
@@ -59,14 +61,17 @@ public class WalaSLAdapter {
                 continue;
             }
             try {
+                // Convert each node descriptor (class signature + formal no) to a 
+                // Statement
                 Statement src = desc2stmt(cg, line.substring(0, p));
                 Statement dst = desc2stmt(cg, line.substring(p + 4));
+                // Slice back from dst, and check if src is in the slice
                 Collection<Statement> slice =
                         Slicer.computeBackwardSlice(
                                 dst,
                                 cg,
                                 pa,
-                                null,
+                                null /* instance key */,
                                 Slicer.DataDependenceOptions.FULL,
                                 Slicer.ControlDependenceOptions.NONE);
                 res = slice.contains(src);
@@ -83,6 +88,7 @@ public class WalaSLAdapter {
     public static Statement desc2stmt(CallGraph cg, String desc) {
         int p, q;
 
+        // Break apart the descriptor string (class(method_sig):formal_no)
         p = desc.indexOf('(');
         if (p == -1) throw new IllegalArgumentException();
         q = desc.indexOf(':');
@@ -94,13 +100,21 @@ public class WalaSLAdapter {
         String klass = desc.substring(0, q);
         String method = desc.substring(q + 1, p);
 
+        // Lookup the WALA CGNode for the method
         TypeReference t =
                 TypeReference.findOrCreate(
                         ClassLoaderReference.Application, "L" + klass.replace('.', '/'));
         MethodReference m = MethodReference.findOrCreate(t, method, sig);
         Set<CGNode> nodes = cg.getNodes(m);
+        // This should never happen with the ZeroCFABuilder, but if we ever do
+        // have a context sensitive call graph we'll need to handle it here 
+        // (probblay by returning a Set<Statement>
+        if(nodes.size() != 1)
+            throw new UnsupportedOperationException("context sensitivity not supported");
         CGNode node = nodes.iterator().next(); /* XXX context sensitivity? */
 
+        // Create a new statement for the formal (statement equality is not
+        // based on identity), NB: formals are one based
         return new ParamCallee(node, formal_no + 1);
     }
 }

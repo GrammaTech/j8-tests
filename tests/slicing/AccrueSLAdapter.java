@@ -38,6 +38,8 @@ public class AccrueSLAdapter {
                 1 /* threads ?*/,
                 false /* disable signatures */,
                 false /* disableObjectClone */);
+                
+        // The following recipie for slicing was taken mostly from AccrueAnalysisMain (in the "pdg" case)
 
         PointsToAnalysis analysis = new PointsToAnalysisSingleThreaded(new TypeSensitive(2, 1));
 
@@ -83,6 +85,10 @@ public class AccrueSLAdapter {
         pdga.runAnalysis();
         ProgramDependenceGraph pdg = pdga.getAnalysisResults();
 
+        // ProgramDependenceGraph is basically a Set<PDGNode>,Set<PDGEdge> pair. 
+        // It doesn't provide an interface for querying it. I believe it is intended
+        // to be just serialized and used by the Pidgin web interface. We break it out
+        // into a PDGNode -> Set<PDGEdge> map so we can more easily traverse it.
         Map<PDGNode, Collection<ProgramDependenceGraph.PDGEdge>> map = new HashMap<>();
         for (ProgramDependenceGraph.PDGEdge e : pdg.allEdges()) {
             Collection<ProgramDependenceGraph.PDGEdge> es = map.get(e.source);
@@ -93,9 +99,11 @@ public class AccrueSLAdapter {
             es.add(e);
         }
 
+        // Read though each query (on standard input)
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = br.readLine()) != null) {
+            // Split on " -> " (which separates the source and the target)
             int p = line.indexOf(" -> ");
             Object res;
             if (p == -1) {
@@ -103,8 +111,11 @@ public class AccrueSLAdapter {
                 continue;
             }
             try {
+                // Convert each node descriptor (class signature + formal no) to a 
+                // PDGNode
                 PDGNode src = desc2node(cg, line.substring(0, p));
                 PDGNode dst = desc2node(cg, line.substring(p + 4));
+                // check is dst is reachable from src (see below)
                 res = checkPath(map, src, dst);
             } catch (Exception e) {
                 // catch-all exception handlers are usually bad, but we intentionally
@@ -119,6 +130,7 @@ public class AccrueSLAdapter {
     public static PDGNode desc2node(BasicCallGraph cg, String desc) {
         int p, q;
 
+        // Break apart the descriptor string (class(method_sig):formal_no)
         p = desc.indexOf('(');
         if (p == -1) throw new IllegalArgumentException();
         q = desc.indexOf(':');
@@ -130,13 +142,22 @@ public class AccrueSLAdapter {
         String klass = desc.substring(0, q);
         String method = desc.substring(q + 1, p);
 
+        // Lookup the WALA CGNode for the method
         TypeReference t =
                 TypeReference.findOrCreate(
                         ClassLoaderReference.Application, "L" + klass.replace('.', '/'));
         MethodReference m = MethodReference.findOrCreate(t, method, sig);
         Set<CGNode> nodes = cg.getNodes(m);
-        CGNode node = nodes.iterator().next(); /* XXX assumes no context sensitivity */
+        // If we have a context sensitive call graph we'll need to handle it
+        // here (probblay by returning a Set<Statement>
+        if(nodes.size() != 1)
+            throw new UnsupportedOperationException("context sensitivity not supported");
+        CGNode node = nodes.iterator().next();
 
+        // Unfortunately PDGNodeFactory doesn't have a lookup/find method. Instead
+        // we used find or create, and assert that we didn't create it (the description
+        // string is ignored when matching existing nodes, so if we ever see *our*
+        // description we must have created it. 
         PDGNode formal =
                 PDGNodeFactory.findOrCreateOther(
                         "__NOTFOUND__",
@@ -150,10 +171,14 @@ public class AccrueSLAdapter {
     }
 
     // This is quite inefficient, but the cost of this is probably dwarfed
-    // by the cost of the PDG computation
+    // by the cost of the PDG computation. Just keep following edges in our
+    // PDGNode -> Set<PDGEdge> map. This uses O(n) stack space, but this
+    // is fine for our current test cases. We'll probably need to make this
+    // non-recursive if larger tests cases are added though.
     public static boolean checkPath(
             Map<PDGNode, Collection<ProgramDependenceGraph.PDGEdge>> g, PDGNode src, PDGNode dest) {
         Collection<ProgramDependenceGraph.PDGEdge> es = g.get(src);
+        // If PDGNode isn't present it indicates that it has no outgoing edges
         if (es == null) return false;
         for (ProgramDependenceGraph.PDGEdge e : es) {
             PDGNode tgt = e.target;

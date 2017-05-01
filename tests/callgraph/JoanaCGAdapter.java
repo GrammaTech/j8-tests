@@ -29,9 +29,12 @@ public class JoanaCGAdapter {
         
         Main.Config cfg = new Main.Config(
             "Test Adapter",
+            // (entry point is a method, not a class, so we tack on main)
             args[args.length - 1] + ".main([Ljava/lang/String;)V",
             sb.toString(),
+            // FieldPropagation.FLAT is what MainGUI::RunSDG does by default...
             SDGBuilder.FieldPropagation.FLAT);
+
         Pair<SDG, SDGBuilder> p = Main.computeAndKeepBuilder(
             System.err, 
             cfg, 
