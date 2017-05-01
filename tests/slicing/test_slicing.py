@@ -1,7 +1,6 @@
 '''
     pytest file
-    1) test for adapters :
-    2) test for the call graph
+    slicing test
 '''
 import pytest # pytest root dir
 import subprocess # forking a child process
