@@ -1,54 +1,48 @@
-import edu.kit.joana.wala.core.PDG;
-import edu.kit.joana.wala.core.PDGNode;
-import edu.kit.joana.wala.core.Main;
-import edu.kit.joana.wala.core.NullProgressMonitor;
-import edu.kit.joana.wala.core.SDGBuilder;
-import edu.kit.joana.ifc.sdg.graph.*;
-import edu.kit.joana.ifc.sdg.graph.slicer.*;
-
-import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.types.*;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
 import com.ibm.wala.util.collections.Pair;
-import com.ibm.wala.util.graph.Graph;
 import com.ibm.wala.util.graph.GraphIntegrity.UnsoundGraphException;
-import com.ibm.wala.types.*;
-
+import edu.kit.joana.ifc.sdg.graph.*;
+import edu.kit.joana.ifc.sdg.graph.slicer.*;
+import edu.kit.joana.wala.core.Main;
+import edu.kit.joana.wala.core.NullProgressMonitor;
+import edu.kit.joana.wala.core.PDG;
+import edu.kit.joana.wala.core.SDGBuilder;
 import java.io.*;
 import java.util.*;
 
 public class JoanaSLAdapter {
     // args == [jre path, app jar 1, ..., app jar n, entrypoint]
     public static void main(String[] args)
-            throws WalaException, IllegalArgumentException, CancelException, UnsoundGraphException, IOException {
-            
+            throws WalaException, IllegalArgumentException, CancelException, UnsoundGraphException,
+                    IOException {
+
         // Build the class path
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i < args.length - 1; i++) {
-            if(i != 1)
-                sb.append(File.pathSeparatorChar);
+            if (i != 1) sb.append(File.pathSeparatorChar);
             sb.append(args[i]);
         }
-        
-        Main.Config cfg = new Main.Config(
-            "Test Adapter",
-            // (entry point is a method, not a class, so we tack on main)
-            args[args.length - 1] + ".main([Ljava/lang/String;)V",
-            sb.toString(),
-            SDGBuilder.PointsToPrecision.TYPE_BASED, // 0-CFA
-            // FieldPropagation.FLAT is what MainGUI::RunSDG does by default...
-            SDGBuilder.FieldPropagation.FLAT);
-        Pair<SDG, SDGBuilder> cons = Main.computeAndKeepBuilder(
-            System.err, 
-            cfg, 
-            false, 
-            NullProgressMonitor.INSTANCE);
-            
+
+        Main.Config cfg =
+                new Main.Config(
+                        "Test Adapter",
+                        // (entry point is a method, not a class, so we tack on main)
+                        args[args.length - 1] + ".main([Ljava/lang/String;)V",
+                        sb.toString(),
+                        SDGBuilder.PointsToPrecision.TYPE_BASED, // 0-CFA
+                        // FieldPropagation.FLAT is what MainGUI::RunSDG does by default...
+                        SDGBuilder.FieldPropagation.FLAT);
+        Pair<SDG, SDGBuilder> cons =
+                Main.computeAndKeepBuilder(System.err, cfg, false, NullProgressMonitor.INSTANCE);
+
         // We're using a vanilla context insensitive backwards slicer
         // (TODO: Check other slicing algorithms?)
         Slicer slicer = new ContextInsensitiveBackward(cons.fst);
-        
+
         // Read though each query (on standard input)
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String line;
@@ -103,10 +97,10 @@ public class JoanaSLAdapter {
         // PointsToPrecision.TYPE_BASED is context insensitive, but if we
         // have a context sensitive call graph we'll need to handle it here
         // (probblay by returning a Set<SDGNode>
-        if(nodes.size() != 1)
+        if (nodes.size() != 1)
             throw new UnsupportedOperationException("context sensitivity not supported");
         CGNode node = nodes.iterator().next(); /* XXX context sensitivity? */
-        
+
         // Find the PDG for this method (cons.snd == SDGBuilder)
         PDG pdg = cons.snd.getPDGforMethod(node);
 

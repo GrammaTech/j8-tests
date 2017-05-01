@@ -38,7 +38,7 @@ public class AccrueSLAdapter {
                 1 /* threads ?*/,
                 false /* disable signatures */,
                 false /* disableObjectClone */);
-                
+
         // The following recipie for slicing was taken mostly from AccrueAnalysisMain (in the "pdg" case)
 
         PointsToAnalysis analysis = new PointsToAnalysisSingleThreaded(new TypeSensitive(2, 1));
@@ -85,7 +85,7 @@ public class AccrueSLAdapter {
         pdga.runAnalysis();
         ProgramDependenceGraph pdg = pdga.getAnalysisResults();
 
-        // ProgramDependenceGraph is basically a Set<PDGNode>,Set<PDGEdge> pair. 
+        // ProgramDependenceGraph is basically a Set<PDGNode>,Set<PDGEdge> pair.
         // It doesn't provide an interface for querying it. I believe it is intended
         // to be just serialized and used by the Pidgin web interface. We break it out
         // into a PDGNode -> Set<PDGEdge> map so we can more easily traverse it.
@@ -111,7 +111,7 @@ public class AccrueSLAdapter {
                 continue;
             }
             try {
-                // Convert each node descriptor (class signature + formal no) to a 
+                // Convert each node descriptor (class signature + formal no) to a
                 // PDGNode
                 PDGNode src = desc2node(cg, line.substring(0, p));
                 PDGNode dst = desc2node(cg, line.substring(p + 4));
@@ -150,14 +150,14 @@ public class AccrueSLAdapter {
         Set<CGNode> nodes = cg.getNodes(m);
         // If we have a context sensitive call graph we'll need to handle it
         // here (probblay by returning a Set<Statement>
-        if(nodes.size() != 1)
+        if (nodes.size() != 1)
             throw new UnsupportedOperationException("context sensitivity not supported");
         CGNode node = nodes.iterator().next();
 
         // Unfortunately PDGNodeFactory doesn't have a lookup/find method. Instead
         // we used find or create, and assert that we didn't create it (the description
         // string is ignored when matching existing nodes, so if we ever see *our*
-        // description we must have created it. 
+        // description we must have created it.
         PDGNode formal =
                 PDGNodeFactory.findOrCreateOther(
                         "__NOTFOUND__",

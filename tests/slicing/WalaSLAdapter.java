@@ -61,7 +61,7 @@ public class WalaSLAdapter {
                 continue;
             }
             try {
-                // Convert each node descriptor (class signature + formal no) to a 
+                // Convert each node descriptor (class signature + formal no) to a
                 // Statement
                 Statement src = desc2stmt(cg, line.substring(0, p));
                 Statement dst = desc2stmt(cg, line.substring(p + 4));
@@ -107,9 +107,9 @@ public class WalaSLAdapter {
         MethodReference m = MethodReference.findOrCreate(t, method, sig);
         Set<CGNode> nodes = cg.getNodes(m);
         // This should never happen with the ZeroCFABuilder, but if we ever do
-        // have a context sensitive call graph we'll need to handle it here 
+        // have a context sensitive call graph we'll need to handle it here
         // (probblay by returning a Set<Statement>
-        if(nodes.size() != 1)
+        if (nodes.size() != 1)
             throw new UnsupportedOperationException("context sensitivity not supported");
         CGNode node = nodes.iterator().next(); /* XXX context sensitivity? */
 
