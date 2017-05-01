@@ -72,7 +72,7 @@ def get_logger():
     logger = logging.getLogger('JAVA8_Tests')
     return logger
 
-def run_cmd(cmd):
+def run_cmd(cmd,stdin=None):
     '''
         Use subprocess module to execute a shell command
         This will return stdout, stderr and shell return code
@@ -88,6 +88,7 @@ def run_cmd(cmd):
         use_logger = True
     try:
         proc = subprocess.Popen(cmd,\
+                stdin=stdin,\
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
         # convert byte to string
