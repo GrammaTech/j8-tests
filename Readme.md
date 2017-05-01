@@ -157,7 +157,10 @@ application it is analyzing reachable from the entry point provide (however,
 it may ignore the entry point and output additional edges which aren't
 reachable from the entry point).
 
-... more soon ...
+The IR is just a list of single edges. The test evaluator is expected to
+perform higher level tests (like checking for paths, etc) on the call graph based on 
+this lower level information.
+
 
 #### Test Family
 
@@ -165,7 +168,26 @@ reachable from the entry point).
 
 ### Slicing IR/Queries
 
-TODO
+The slicing "ir" is slightly different than the call graph IR. For the slicing tests
+you specify a query and an expected result. The query is in the format:
+
+<tt>com.contoso.Foo.bar([Ljava/lang/String;)V:0 -> com.contoso.Baz.quux(I)V:1</tt>
+<tt>com.contoso.Foo.bar([Ljava/lang/String;)V:1 -> com.contoso.Baz.quux(I)V:1</tt>
+
+and the expected output is in the format:
+
+<tt>com.contoso.Foo.bar([Ljava/lang/String;)V:0 -> com.contoso.Baz.quux(I)V:1: true</tt>
+<tt>com.contoso.Foo.bar([Ljava/lang/String;)V:1 -> com.contoso.Baz.quux(I)V:1: true</tt>
+
+The "query" asks if there is a data dependence between <tt>Foo.bar</tt>'s first formal 
+and <tt>Baz.quux</tt>'s second formal. Only data (not control) dependencies should be
+considered.
+
+The query should be specified (one question per line) in the file
+<tt>apps/&lt;app&gt;/ground_truth/slicing_query</tt>. The output is in the file 
+<tt>apps/&lt;app&gt;/ground_truth/slicing_query</tt> and is exactly the question, repeated,
+followed by a colon and "true" or "false" depending on if a dependency is expected or not.
+
 
 <a name="setup"/>
 
