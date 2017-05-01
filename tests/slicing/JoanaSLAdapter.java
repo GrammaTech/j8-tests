@@ -67,16 +67,6 @@ public class JoanaSLAdapter {
             System.out.println(line + ": " + res);
         }
         br.close();
-
-        /*Graph<PDG> cg = b.createCallGraph();
-
-        for (Iterator<PDG> it = cg.iterator(); it.hasNext(); ) {
-            PDG n = it.next();
-            for (Iterator<PDG> it2 = cg.getSuccNodes(n); it2.hasNext(); ) {
-                PDG s = it2.next();
-                System.out.println(toString(n) + " -> " + toString(s));
-            }
-        }*/
     }
 
     public static SDGNode desc2node(Pair<SDG, SDGBuilder> cons, String desc) {
