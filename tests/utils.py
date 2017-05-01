@@ -44,6 +44,12 @@ def generate_classpath(tool_name, tool_path):
             os.path.join(tool_path, 'target/classes'),
             os.path.join(tool_path, 'target/dependency/*')
             ])
+            
+    if tool_name == 'Joana':
+        return ":".join([
+            ".",
+            os.path.join(tool_path, 'dist', 'joana.wala.jodroid', 'classes')
+            ])
 
 
 def change_dir(test_dir):
