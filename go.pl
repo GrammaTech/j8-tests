@@ -3,7 +3,8 @@
 my %tools = qw(
     wala /cub0/balliet/pidgin-latest/WALA-dontuse
     accrue /cub0/balliet/pidgin-latest/accrue-bytecode
-    soot --tool_path=/cub0/balliet/lambda/soot
+    soot /cub0/balliet/lambda/soot
+    joana /cub0/balliet/lambda/joana
 );
 my %tests = map { ($_, undef) } qw(callgraph slicing);
 foreach(keys %tools) {
