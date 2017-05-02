@@ -37,15 +37,20 @@ $ tree
 |    |--- apps
 |    |    |--- church
 |    |    |--- eclipse
-|    |--- dependencies
-|    |    |--- jce.jar
-|    |    |--- rt.jar
-|    |--- tools
-|--- tests
+|    |    `--- ... other apps ...
+|    `--- dependencies
+|         |--- jce.jar
+|         |--- rt.jar
+|         `--- ... other jre jars ...
+`--- tests
     |--- utils.py
     |--- conftest.py
     |--- callgraph
-         |--- call_test.py
+    |    |--- conftest.py
+    |    |--- test_callgraph.py
+    |    |--- WalaCGAdapter.java
+    |    `--- ... other adapters ...
+    `--- ... other test families ...
 ```
 
 The files `pytest.ini`, `conftest.py` and `setup.py` provide top-level setup and configuration information. More information is available as comments in the files themselves.
