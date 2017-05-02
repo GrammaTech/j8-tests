@@ -1,14 +1,17 @@
 '''
-    pytest file
-    1) test for adapters :
-    2) test for the call graph
+Call graph test family:
+
+The call graph family currently tests for the presense of edges in the call 
+graph. Each adapter is expected to output all edges in the call graph, and the
+evaluator performs various checks on it. For details on the format see:
+https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#callgraph-ir
 '''
-import pytest # pytest root dir
-import subprocess # forking a child process
+import pytest
+import subprocess
 import os
-import sys # path append
-import filecmp # file comparison
-import glob #glob.glob
+import sys
+import filecmp
+import glob
 
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils

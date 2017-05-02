@@ -1,13 +1,17 @@
 '''
-    pytest file
-    slicing test
+Slicing test family:
+
+The slicing family tests currently checks for data flow between two formals.
+Each "query" (a source and target formal) can have an expected result of
+either data flow existing or not existing. For details on the format see:
+https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#slicing-ir
 '''
-import pytest # pytest root dir
-import subprocess # forking a child process
+import pytest
+import subprocess
 import os
-import sys # path append
-import filecmp # file comparison
-import glob #glob.glob
+import sys
+import filecmp
+import glob
 
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
