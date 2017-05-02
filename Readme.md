@@ -173,6 +173,19 @@ test infrastructure.
 * <tt>org.eclipse.jetty.start.Main</tt> has a main method and is the primary driver for the
   server.
 
+### Hello
+* [Hello](apps/hello/Hello.java) is a very minimal hello worldish java program (which
+  surprisingly doesn't actually print hello world). It is intended to test basically
+  testing infrastructure and adapter functionality. Every test family should run very
+  quickly on this application (making running with --app=hello a good sanity check).
+* It is about 7 (just 7, not 7k) lines of code.
+* The source code is available at
+  https://github.com/GrammaTech/j8-tests/blob/master/src/apps/hello/Hello.java. The provided 
+  jars will be kept up to date with the source file in the repository.
+* Hello does not use any Java 8 features (it is intended only to test the infrastructure).
+* <tt>Hello</tt> had a main method and is a suitable entry point for analysis (you can reach
+  *both* other methods from it!).
+
 <a name="provided-tests"/>
 
 ## Provided Test Families and Tests
