@@ -42,7 +42,8 @@ def generate_classpath(tool_name, tool_path):
         classpath = ":".join([
             ".",
             os.path.join(tool_path, 'target/classes'),
-            os.path.join(tool_path, 'target/dependency/*')
+            os.path.join(tool_path, 'target/dependency/*'),
+            os.path.join(tool_path, 'data')
             ])
         return classpath
             
