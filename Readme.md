@@ -217,7 +217,7 @@ python setup.py --tool <tool1>=<path_to_tool1>
   * <tt>--tool foo=/path/to/foo</tt> specifies the name of the tool and its path It must 
     be one of the supported tools (see below). The path is the location of the root of the 
     (compiled) source distribution of the tool. The approprite target/classes, etc
-    paths will be added to the CLASSPATH for running the tool. Multiple --tool options
+    paths will be added to the CLASSPATH for running the tool. Multiple <tt>--tool</tt> options
     can be present. All the given tools will be tested. Tool names should always be specified
     in all lower case (e.g. wala).
   * <tt>--app app</tt> specifies an application to test (that is analyze with each tool). If
