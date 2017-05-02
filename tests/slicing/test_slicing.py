@@ -68,8 +68,7 @@ def xtest_slicing(adapter,app,tmpdir_factory):
 
     message = ""
     expected_f = open(os.path.join(app_path, 'groundtruth', 'slicing_result'), 'r')
-    for (expected,actual) in zip(expected_f, stdout.split("\n")):
-        expected = expected.rstrip('\n')
+    for (expected,actual) in zip((l.strip() for l in expected_f), stdout.splitlines()):
         if expected != actual:
             message += expected + " != " + actual + "\n"
     if message:
