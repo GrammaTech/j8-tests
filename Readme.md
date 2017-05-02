@@ -28,8 +28,7 @@ Once a tool has been run on an application and we have obtained the IR (such as 
 Our testing framework is based on  [pytest](https://docs.pytest.org/en/latest/). Following the terminology from [the overview section](#overview), a test involves running an **adapter** for a **tool** on an **application**. This produces an **IR** which is fed into a **test evaluator** that compares it to a **ground truth**.
 
 Our framework structure and architecture is illustrated by the sample directory structure below (contents of the `src` and `tests` directories are truncated for ease of presentation)
-```bash
-$ tree
+```
 |--- conftest.py
 |--- pytest.ini
 |--- setup.py
