@@ -16,7 +16,7 @@ def generate_classpath(tool_name, tool_path):
         @tool : tool name, case sensitive
         @tool_path : directory where tool has been built/installed
     '''
-    if tool_name == 'Wala':
+    if tool_name == 'wala':
         # list of WALA packages
         prj = ['core.tests', 'core', 'shrike', 'util']
         # join the packages with tool_path
@@ -25,7 +25,7 @@ def generate_classpath(tool_name, tool_path):
                 for pt in prj])
         return classpath
 
-    if tool_name == 'Soot':
+    elif tool_name == 'soot':
         # class path for dependencies
         # root_dir is set in top level conftest
         dep = [tool_path + '/../heros/heros-trunk.jar',
@@ -37,7 +37,7 @@ def generate_classpath(tool_name, tool_path):
         classpath = ".:" + ":".join(dep + cp_soot)
         return classpath
 
-    if tool_name == 'Accrue':
+    elif tool_name == 'accrue':
         # set classpath
         classpath = ":".join([
             ".",
@@ -46,11 +46,13 @@ def generate_classpath(tool_name, tool_path):
             ])
         return classpath
             
-    if tool_name == 'Joana':
+    elif tool_name == 'joana':
         return ":".join([
             ".",
             os.path.join(tool_path, 'dist', 'joana.wala.jodroid', 'classes')
             ])
+    else:
+        raise KeyError(tool_name + " not supported")
 
 def change_dir(target_dir):
     '''

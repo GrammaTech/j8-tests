@@ -19,22 +19,13 @@ def pytest_generate_tests(metafunc):
         for every tool and every app
     '''
     if 'adapter' in metafunc.fixturenames:
-        tool_list = []
-        # build tool_list using combinations of tool and tool_path
-        # as specified on the command line
-        if  metafunc.config.option.tool and\
-                metafunc.config.option.tool_path:
-            # case where only one tool is passed
-            if isinstance(metafunc.config.option.tool, str):
-                tool_list = [
-                    metafunc.config.option.tool,
-                    metafunc.config.option.tool_path
-                ]
-            # case where a list of tools is passed
-            elif isinstance(metafunc.config.option.tool, list):
-                tool_list = zip(metafunc.config.option.tool,
-                    metafunc.config.option.tool_path)
-
+        # build tool_list as specified by --tool on the command line
+        tool_list = metafunc.config.option.tool
+        if not tool_list:
+            tool_list = []
+        elif not isinstance(tool_list, list):
+            tool_list = [tool_list]
+        
         # build tool_list as specified in the configuration file
         if metafunc.config.option.conf_file:
             try:
@@ -42,11 +33,12 @@ def pytest_generate_tests(metafunc):
                     tool_list = json.load(fread)
             except:
                 tool_list = []
+
         # generate adapter fixture for every tool in tool_list
-        tool_list = [(a.title(),b) for (a,b) in tool_list]
         metafunc.parametrize('adapter', tool_list,
             ids=[n for(n,_) in tool_list],
             indirect=True)
+
     # generate app fixture for every app
     if 'app' in metafunc.funcargnames:
         # case where app_list is passed on the command line

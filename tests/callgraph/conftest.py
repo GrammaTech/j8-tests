@@ -28,7 +28,7 @@ def xadapter(tool_name, tool_path):
         in the same directory
 
     '''
-    adapter_name = tool_name + 'CGAdapter';
+    adapter_name = tool_name.title() + 'CGAdapter';
     # set class path
     class_path = utils.generate_classpath(tool_name, tool_path)
     # build adaptor

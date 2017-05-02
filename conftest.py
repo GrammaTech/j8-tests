@@ -6,13 +6,17 @@
 import pytest
 import os
 
+def split_tool(s):
+    l = s.split('=', 2)
+    if len(l) < 2:
+        raise ValueError("Usage: --tool name=/path/to/tool")
+    return (l[0].lower(), l[1])
+
 def pytest_addoption(parser):
     ''' Command line options '''
-    parser.addoption("--tool", action="append", help="tool name")
-    parser.addoption("--tool_path", action="append",\
-            help="tool location")
+    parser.addoption("--tool", action="append", type=split_tool, help="tool_name=tool_path")
     parser.addoption("--conf_file", help="configuration file")
-    parser.addoption("--app", action="append", help="target app name")
+    parser.addoption("--app", action="append", type=str.lower, help="target app name")
 
 def pytest_namespace():
     '''

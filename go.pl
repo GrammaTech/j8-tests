@@ -18,7 +18,7 @@ push @cmd, map {
     if(/^\w+$/) {
         my $l = lc;
         if(exists $tools{$l}) {
-            ("--tool=$_", "--tool_path=$tools{$l}");
+            ("--tool=$_=$tools{$l}");
         } elsif(exists $tests{$l}) {
            push @k, "test_$l";
            ();
