@@ -174,7 +174,7 @@ test infrastructure.
   server.
 
 ### Hello
-* [Hello](apps/hello/Hello.java) is a very minimal hello worldish java program (which
+* [Hello](src/apps/hello/Hello.java) is a very minimal hello worldish java program (which
   surprisingly doesn't actually print hello world). It is intended to test basically
   testing infrastructure and adapter functionality. Every test family should run very
   quickly on this application (making running with --app=hello a good sanity check).
