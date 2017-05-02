@@ -177,9 +177,8 @@ test infrastructure.
 
 ## Provided Test Families and Tests
 
+<a name="callgraph-ir"/>
 ### Call Graph
-
-#### IR
 
 The call graph IR is a plain text file with one call graph edge per line. Each edge is represented as <tt>_node_ -> _node_</tt>, where _node_ is <tt>full.class.name(method_descriptor)</tt>. For example:
 
@@ -196,11 +195,11 @@ The IR is just a list of single edges. The test evaluator is expected to
 perform higher level tests (like checking for paths, etc) on the call graph based on 
 this lower level information.
 
+The call graph evaluator can currently check for the presense of edges in the call graph
+(paths can be constructed with sequences of edges). Future release will contain support
+for more queries on the call graph ir.
 
-#### Test Family
-
-
-
+<a name="slicing-ir"/>
 ### Slicing IR/Queries
 
 The slicing "ir" is slightly different than the call graph IR. For the slicing tests
