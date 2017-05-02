@@ -197,8 +197,10 @@ perform higher level tests (like checking for paths, etc) on the call graph base
 this lower level information.
 
 The call graph evaluator can currently check for the presense of edges in the call graph
-(paths can be constructed with sequences of edges). Future release will contain support
-for more queries on the call graph ir.
+(paths can be constructed with sequences of edges). The list of expected edges (in the
+format specified above) should go in <tt>src/apps/&lt;app&gt;/groundtruth/callgraph_edges</tt>.
+
+Future release will contain support for more queries on the call graph ir.
 
 <a name="slicing-ir"/>
 
@@ -220,8 +222,8 @@ and <tt>Baz.quux</tt>'s second formal. Only data (not control) dependencies shou
 considered.
 
 The query should be specified (one question per line) in the file
-<tt>apps/&lt;app&gt;/ground_truth/slicing_query</tt>. The output is in the file 
-<tt>apps/&lt;app&gt;/ground_truth/slicing_query</tt> and is exactly the question, repeated,
+<tt>apps/&lt;app&gt;/groundtruth/slicing_query</tt>. The output is in the file 
+<tt>apps/&lt;app&gt;/groundtruth/slicing_result</tt> and is exactly the question, repeated,
 followed by a colon and "true" or "false" depending on if a dependency is expected or not.
 
 
@@ -304,7 +306,7 @@ To add a new application jar, you should:
 * Create a subdirectory of `src/apps` and place the application jar file(s) there, including all jars necessary to compile and run the adapter.
 * Create <tt>src/apps/&lt;app&gt;/main&gt;</tt>, a plain text file whose sole contents is the
   name of the main class, i.e.,the class that contains <tt>main(String[] args)</tt>  and should be used as an entrypoint for analysis.
-* Add ground truth for one or more test families in the directory <tt>src/apps/&lt;app&gt;/ground_truth</tt>. The ground truth file should be named <tt>&lt;family&gt;_&lt;testid&gt;</tt>, where `family` is the name of the test family and `testid` is the name/identifier of an individual test in the family.
+* Add ground truth for one or more test families in the directory <tt>src/apps/&lt;app&gt;/groundtruth</tt>. The ground truth file should be named <tt>&lt;family&gt;_&lt;testid&gt;</tt>, where `family` is the name of the test family and `testid` is the name/identifier of an individual test in the family.
 * Update the documentation as explained [below](#extending-documentation).
 
 ### Adding a new test/test evaluator
