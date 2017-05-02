@@ -2,7 +2,7 @@
     Main driver program for test framework.
     This checks system prerequisites and then calls pytest
     Any command line arguments are passed to pytest
-    Usage : python setup.py --tool --tool_path
+    Usage : python setup.py --tool wala=/path/to/wala
 """
 
 import sys
