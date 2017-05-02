@@ -208,12 +208,23 @@ cd j8-tests/
 
 * Running the system
 ```
-python setup.py --tool <Tool1> --tool_path <path_to_tool1> --tool <Tool2> --tool_path <path_to_tool2>
+python setup.py --tool <tool1> --tool_path <path_to_tool1> 
+                [ --tool <tool2> --tool_path <path_to_tool2> ]
+                [ --app app1 ] [ --app app2 ]
+                [ -k test_<family> ]
 ```
-If the user wishes to skip the setup, they can directly run pytest by invoking
-```
-pytest --tool <Tool1> --tool_path <path_to_tool1>
-```
+
+  * <tt>--tool foo</tt> specifies the name of the tool. It must be one of
+    the supported tools (see below). Multiple --tool and --tool_path options
+    can be present. All the given tools will be tested.
+  * <tt>--tool_path /path/to/foo</tt> specifies the path to the root of the (compiled) 
+    source distribution of the preceding <tt>--tool</tt>. The approprite target/classes, etc
+    paths will be added to the CLASSPATH for running the tool.
+  * <tt>--app app</tt> specifies an application to test (that is analyze with each tool). If
+    no <tt>--app</tt> options are given, all applications in the test suite will be run, 
+    otherwise, only those specified will be run.
+  * <tt>-k test_<family></tt> limits the test families that will be run. If no <tt>-k</tt>
+    options are specified all test families will be run.
 
 <a name="extending"/>
 
