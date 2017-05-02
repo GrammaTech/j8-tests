@@ -98,7 +98,7 @@ adapters to test JOANA's call graph and slicing capabilities. JOANA doesn't
 appear to have regular releases, so the adapters were developed against the
 latest version of their git repo.
 <tt>b4bfc6092b427411b1bdf232dd39bce0c6fdcb41</tt> from
-[https://github.com/joana-team/joana] is known to be compatable with the
+https://github.com/joana-team/joana is known to be compatable with the
 test infrastructure.
 
 <a name="provided-applications"/> 
