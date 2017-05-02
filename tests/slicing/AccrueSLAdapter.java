@@ -34,7 +34,7 @@ public class AccrueSLAdapter {
         AnalysisUtil.init(
                 sb.toString() /* classpath */,
                 args[args.length - 1] /* entry point */,
-                "." /* output dir */,
+                System.getProperty("java.io.tmpdir") /* output dir */,
                 1 /* threads ?*/,
                 false /* disable signatures */,
                 false /* disableObjectClone */);

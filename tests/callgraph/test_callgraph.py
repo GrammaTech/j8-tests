@@ -13,11 +13,11 @@ import glob #glob.glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
-def test_callgraph(adapter,app):
-    xtest_callgraph(adapter,app)
+def test_callgraph(adapter,app,tmpdir_factory):
+    xtest_callgraph(adapter,app,tmpdir_factory)
 
 @utils.change_dir(os.path.dirname(__file__))
-def xtest_callgraph(adapter,app):
+def xtest_callgraph(adapter,app,tmpdir_factory):
     '''
         Does the callgraph test
     '''
@@ -52,7 +52,10 @@ def xtest_callgraph(adapter,app):
         pytest.skip(message)
 
     # cmd for fullcg
-    cmd = ['java', '-cp', class_path, adapter_name, dep_path] + jar_names + [ main]
+    cmd = ['java', 
+        '-Djava.io.tmpdir=' + str(tmpdir_factory.getbasetemp()),
+        '-cp', class_path, 
+        adapter_name, dep_path] + jar_names + [main]
     # generate the fullcg
     stdout, _, returncode = utils.run_cmd(cmd)
 
