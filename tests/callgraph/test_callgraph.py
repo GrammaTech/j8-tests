@@ -65,25 +65,13 @@ def xtest_callgraph(adapter,app,tmpdir_factory):
     # failure message to display
     message = 'Adapter failed to produce callgraph'
     assert  returncode == 0, message
-    # write out the fullcg
-    with open('fullcg', 'w') as fwrite:
-        fwrite.write(stdout)
+    
+    with open(expected, 'r') as f:
+        expected_list = set(l.strip() for l in f)
+    fullcg_list = set(stdout.splitlines())
 
-    # get actual value
-    expected_list = set()
-    fullcg_list = set()
-    # read fullcg from file
-    with open('fullcg', 'r') as fread:
-        for line in fread:
-            fullcg_list.add(line)
-    # read expected from file
-    with open(expected, 'r') as fread:
-        for line in fread:
-            expected_list.add(line)
     # get the intersection of expected and fullcg
-    actual = set(sorted(expected_list.intersection(fullcg_list)))
+    actual = expected_list.intersection(fullcg_list)
     message = 'Ground Truth differs for app %s' % app
-    # actual and expected sets should be of same size
-    assert len(actual) == len(expected_list) , message
-    # assert the difference of actual and expected to be zero
-    assert len(actual ^  expected_list) == 0, message
+    # actual and expected sets should be the same
+    assert actual == expected_list, message
