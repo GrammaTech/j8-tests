@@ -1,3 +1,8 @@
+/* Accrue Bytecode call graph adapter
+ * Tested with accrue git hash: 925169e596cfde0685dc4c16e5c99f3c1bc5e3f0
+ * See https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#callgraph-ir 
+ * for a detailed description of the call graph ir
+ */
 import analysis.AnalysisUtil;
 import analysis.pointer.analyses.*;
 import analysis.pointer.engine.*;

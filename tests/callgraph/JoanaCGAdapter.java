@@ -1,3 +1,8 @@
+/* JOANA call graph adapter
+ * Tested with JOANA git hash: b4bfc6092b427411b1bdf232dd39bce0c6fdcb41
+ * See https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#callgraph-ir 
+ * for a detailed description of the call graph ir
+ */
 import edu.kit.joana.wala.core.PDG;
 import edu.kit.joana.wala.core.Main;
 import edu.kit.joana.wala.core.NullProgressMonitor;

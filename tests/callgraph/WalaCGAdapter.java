@@ -1,3 +1,8 @@
+/* WALA call graph adapter
+ * Tested with WALA 1.4.1
+ * See https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#callgraph-ir 
+ * for a detailed description of the call graph ir
+ */
 import com.ibm.wala.core.tests.callGraph.CallGraphTestUtil;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisCacheImpl;

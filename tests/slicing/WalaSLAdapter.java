@@ -1,3 +1,8 @@
+/* WALA slicing adapter
+ * Tested with WALA 1.4.1
+ * See https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#slicing-ir
+ * for a detailed description of the slicing protocol
+ */
 import com.ibm.wala.core.tests.callGraph.CallGraphTestUtil;
 import com.ibm.wala.ipa.callgraph.AnalysisCacheImpl;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;

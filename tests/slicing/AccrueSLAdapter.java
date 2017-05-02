@@ -1,3 +1,8 @@
+/* Accrue Bytecode slicing adapter
+ * Tested with accrue git hash: 925169e596cfde0685dc4c16e5c99f3c1bc5e3f0
+ * See https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#slicing-ir 
+ * for a detailed description of the slicing protocol
+ */
 import analysis.AnalysisUtil;
 import analysis.dataflow.interprocedural.exceptions.*;
 import analysis.dataflow.interprocedural.nonnull.*;

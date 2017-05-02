@@ -1,3 +1,8 @@
+/* Soot call graph adapter
+ * Tested with Soot 3.0.0
+ * See https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#callgraph-ir 
+ * for a detailed description of the call graph ir
+ */
 import java.io.File;
 import java.util.Iterator;
 import soot.*;

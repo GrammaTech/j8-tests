@@ -1,3 +1,8 @@
+/* JOANA slicing adapter
+ * Tested with JOANA git hash: b4bfc6092b427411b1bdf232dd39bce0c6fdcb41
+ * See https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#slicing-ir
+ * for a detailed description of the slicing protocol
+ */
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.types.*;
