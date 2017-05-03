@@ -1,0 +1,3 @@
+Hello.foo(II)V -> Hello.bar(I)V
+Hello.foo(II)V -> java.lang.System.exit(I)V
+Hello.main([Ljava/lang/String;)V -> java.lang.System.exit(I)V

@@ -1,0 +1,4 @@
+Church.runBinary(Ljava/lang/String;Ljava/util/function/BiFunction;LChurch;LChurch;)V
+Church.runUnary(Ljava/lang/String;Ljava/util/function/Function;LChurch;)V
+Church.runUnaryG(Ljava/lang/String;Ljava/util/function/Function;LChurch;)V
+Church.succ()LChurch;
