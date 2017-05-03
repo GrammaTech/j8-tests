@@ -21,9 +21,17 @@ import glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
-def test_callgraph(adapter,app,tmpdir):
+def parse_edges(lines):
     '''
-        Does the callgraph test
+    Turn an iterator of strings of the form <src-node> -> <tgt-node>
+    into a list of (src,tgt) pairs
+    '''
+    return [tuple(line.split(" -> ", 2)) for line in lines]
+
+@pytest.fixture(scope='module')
+def cg(adapter,app,tmpdir_factory):
+    '''
+        Builds the call graph ir
     '''
     # setup for the test
     class_path, adapter_name = adapter
@@ -43,6 +51,38 @@ def test_callgraph(adapter,app,tmpdir):
         main = None
     assert not main == None, main
 
+    # cmd for fullcg
+    cmd = ['java', 
+        '-Djava.io.tmpdir=' + str(tmpdir_factory.mktemp('working',numbered=True)),
+        '-cp', class_path, 
+        adapter_name, dep_path] + jar_names + [main]
+    # generate the fullcg
+    stdout, _, returncode = utils.run_cmd(cmd)
+
+    # failure message to display
+    message = 'Adapter failed to produce callgraph'
+    assert  returncode == 0, message
+    
+    # parse the edges in the adapter ouput into a list of src/dst pairs
+    edges = parse_edges(stdout.splitlines())
+
+    # build a dictionary representing the call graph
+    # nodes in the dictionary map to a set of targets
+    # nodes part of the call graph but without any outgoing edges
+    # will exist in the dictionary but with an empty set
+    cg = dict()
+    for (s,t) in edges:
+        if s in cg:
+            cg[s].add(t)
+        else:
+            cg[s] = set((t,))
+        if not t in cg:
+            cg[t] = set()
+    return cg
+
+def test_callgraph_edges(cg,app):
+    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+
     # ground truth
     expected = os.path.join(app_path, 'groundtruth', 'callgraph_edges')
 
@@ -55,24 +95,69 @@ def test_callgraph(adapter,app,tmpdir):
         utils.get_logger().warning(message)
         pytest.skip(message)
 
-    # cmd for fullcg
-    cmd = ['java', 
-        '-Djava.io.tmpdir=' + str(tmpdir),
-        '-cp', class_path, 
-        adapter_name, dep_path] + jar_names + [main]
-    # generate the fullcg
-    stdout, _, returncode = utils.run_cmd(cmd)
-
-    # failure message to display
-    message = 'Adapter failed to produce callgraph'
-    assert  returncode == 0, message
-    
     with open(expected, 'r') as f:
-        expected_list = set(l.strip() for l in f)
-    fullcg_list = set(stdout.splitlines())
+        edges = parse_edges(l.rstrip("\n") for l in f)
+        
+    for (s,t) in edges:
+        assert s in cg, "call graph contains " + s
+        assert t in cg, "call graph contains " + t
+        assert t in cg[s], "call graph contains " + s + " -> " + t
 
-    # get the intersection of expected and fullcg
-    actual = expected_list.intersection(fullcg_list)
-    message = 'Ground Truth differs for app %s' % app
-    # actual and expected sets should be the same
-    assert actual == expected_list, message
+def test_callgraph_nodes(cg,app):
+    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+
+    # ground truth
+    expected = os.path.join(app_path, 'groundtruth', 'callgraph_nodes')
+
+    # skip  the test if the ground truth doesn't exists
+    # using imperative skip option
+    if not os.path.exists(expected):
+        message = "Ground Truth for app %s for test %s missing"\
+            % (app, os.path.basename(__file__))
+       # log the message
+        utils.get_logger().warning(message)
+        pytest.skip(message)
+
+    with open(expected, 'r') as f:
+        nodes = [l.strip() for l in f]
+    
+    for n in nodes:
+        assert n in cg, "call graph contains " + n
+
+def has_path(g, src, tgt):
+    if not src in g:
+        return False
+    wl = [src]
+    visited = set()
+    while wl:
+        n = wl.pop()
+        for t in g[n]:
+            if t == tgt:
+                return True
+            if t not in visited:
+                visited.add(t)
+                wl.append(t)
+    return False
+
+def test_callgraph_paths(cg,app):
+    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+
+    # ground truth
+    expected = os.path.join(app_path, 'groundtruth', 'callgraph_paths')
+
+    # skip  the test if the ground truth doesn't exists
+    # using imperative skip option
+    if not os.path.exists(expected):
+        message = "Ground Truth for app %s for test %s missing"\
+            % (app, os.path.basename(__file__))
+       # log the message
+        utils.get_logger().warning(message)
+        pytest.skip(message)
+
+    with open(expected, 'r') as f:
+        pairs = parse_edges(l.rstrip("\n") for l in f)
+
+    for (s,t) in pairs:
+        assert s in cg, "call graph contains " + s
+        assert t in cg, "call graph contains " + t
+        assert has_path(cg, s, t), "call graph has path " + s + " ... " + t
