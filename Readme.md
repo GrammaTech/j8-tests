@@ -249,6 +249,7 @@ followed by a colon and "true" or "false" depending on if a dependency is expect
 ## Installing and Running the Framework
 
 * Prerequisites
+
 The test system uses the pytest framework to control test execution and reporting of results. 
 You will need a Python 2.7 or Python 3 installation on your system along with the pip pacakge
 manager. https://pypi.python.org/pypi/pip
