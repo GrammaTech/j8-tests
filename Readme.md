@@ -332,10 +332,6 @@ To add a new test to an existing test family, you should:
 * The test name and signature should follow the pattern below, where `family` is the name of the test family and `testid` is the name/identifier of the individual test.
 ```
 def test_family_testid(adapter,app):
-    xtest_family_testid(adapter,app)
-
-@utils.change_dir(os.path.dirname(__file__))
-def xtest_family_testid(adapter,app):
 ```
 * See [test_callgraph.py](tests/callgraph/test_callgraph.py) for a relatively simple example
   of an evaluator.
