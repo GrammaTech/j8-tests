@@ -248,9 +248,14 @@ followed by a colon and "true" or "false" depending on if a dependency is expect
 
 ## Installing and Running the Framework
 
-The steps for setting up pytests are following.
+* Prerequisites
+The test system uses the pytest framework to control test execution and reporting of results. 
+You will need a Python 2.7 or Python 3 installation on your system along with the pip pacakge
+manager. https://pypi.python.org/pypi/pip
 
-* Installation
+The steps for setting up pytest and the test system are as follows:
+
+* Pytest Installation
 ```bash
 pip install -U pytest
 ```
