@@ -49,27 +49,6 @@ def generate_classpath(tool_name, tool_path):
     else:
         raise KeyError(tool_name + " not supported")
 
-def change_dir(target_dir):
-    '''
-    This decorator does the following:
-    1) Change to target directory
-    2) Execute the callee function
-    3) Change back to last working directory
-    @target_dir : target directory
-    '''
-    def decorator(func):
-        ''' main decorator'''
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            ''' inner wrapper '''
-            current_dir = os.getcwd()
-            os.chdir(target_dir)
-            r = func(*args, **kwargs)
-            os.chdir(current_dir)
-            return r
-        return wrapper
-    return decorator
-
 def get_logger():
     ''' common logger interface'''
     logger = logging.getLogger('JAVA8_Tests')

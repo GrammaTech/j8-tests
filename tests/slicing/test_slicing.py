@@ -23,10 +23,6 @@ sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
 def test_slicing(adapter,app,tmpdir):
-    xtest_slicing(adapter,app,tmpdir)
-
-@utils.change_dir(os.path.dirname(__file__))
-def xtest_slicing(adapter,app,tmpdir):
     '''
         Does the slicing test
     '''

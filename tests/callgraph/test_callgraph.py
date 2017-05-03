@@ -22,10 +22,6 @@ sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
 def test_callgraph(adapter,app,tmpdir):
-    xtest_callgraph(adapter,app,tmpdir)
-
-@utils.change_dir(os.path.dirname(__file__))
-def xtest_callgraph(adapter,app,tmpdir):
     '''
         Does the callgraph test
     '''
