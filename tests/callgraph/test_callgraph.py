@@ -28,6 +28,9 @@ def parse_edges(lines):
     '''
     return [tuple(line.split(" -> ", 2)) for line in lines]
 
+# The cg fixture generates the callgraph ir for an application/tool pair
+# It is represented by a dictionary mapping nodes to a set of targets
+# (a node is in the set if there is an edge between the two nodes)
 @pytest.fixture(scope='module')
 def cg(adapter,app,tmpdir_factory):
     '''
@@ -80,6 +83,7 @@ def cg(adapter,app,tmpdir_factory):
             cg[t] = set()
     return cg
 
+# This test checks for edges in the call graph (from callgraph_edges)
 def test_callgraph_edges(cg,app):
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
 
@@ -103,6 +107,8 @@ def test_callgraph_edges(cg,app):
         assert t in cg, "call graph contains " + t
         assert t in cg[s], "call graph contains " + s + " -> " + t
 
+# This test checks for nodes in the call graph (anywhere, it doesn't care
+# how they're reachable) (from callgraph_nodes)
 def test_callgraph_nodes(cg,app):
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
 
@@ -124,6 +130,8 @@ def test_callgraph_nodes(cg,app):
     for n in nodes:
         assert n in cg, "call graph contains " + n
 
+# Quick and dirty check for a path between two nodes in the
+# call graph dictionary (NB: this must not be recursive)
 def has_path(g, src, tgt):
     if not src in g:
         return False
@@ -139,6 +147,9 @@ def has_path(g, src, tgt):
                 wl.append(t)
     return False
 
+# This test checks for paths in the call graph, a start and end
+# node are given (from callgraph_paths) any we check if there is
+# any path between them
 def test_callgraph_paths(cg,app):
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
 
