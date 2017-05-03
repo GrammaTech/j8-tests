@@ -19,7 +19,7 @@ push @cmd, map {
         my $l = lc;
         if(exists $tools{$l}) {
             ("--tool=$_=$tools{$l}");
-        } elsif(exists $tests{$l}) {
+        } elsif(exists $tests{$l} || $l =~ /^([a-z]+)_/ && exists $tests{$1}) {
            push @k, "test_$l";
            ();
         } elsif(-d "src/apps/$_") {
