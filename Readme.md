@@ -213,7 +213,7 @@ The IR is just a list of single edges. The test evaluator is expected to
 perform higher level tests (like checking for paths, etc) on the call graph based on 
 this lower level information.
 
-The call graph evaluator can currently check for the presense of edges in the call graph
+The call graph evaluator can currently check for the presence of edges in the call graph
 (paths can be constructed with sequences of edges). The list of expected edges (in the
 format specified above) should go in <tt>src/apps/&lt;app&gt;/groundtruth/callgraph_edges</tt>.
 
