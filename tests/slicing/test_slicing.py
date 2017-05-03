@@ -5,6 +5,12 @@ The slicing family tests currently checks for data flow between two formals.
 Each "query" (a source and target formal) can have an expected result of
 either data flow existing or not existing. For details on the format see:
 https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#slicing-ir
+
+The ground truth for the slicing test is manually generated. Interesting
+data flow (ideally things which to though tricky constructs like lambdas and
+default methods should be identified in the source code and a corresponding
+pair of formals surrounding it added as a query. Both cases where data flow
+is expected and not expected are interesting.
 '''
 import pytest
 import subprocess

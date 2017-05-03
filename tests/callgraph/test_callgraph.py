@@ -5,6 +5,11 @@ The call graph family currently tests for the presense of edges in the call
 graph. Each adapter is expected to output all edges in the call graph, and the
 evaluator performs various checks on it. For details on the format see:
 https://github.com/GrammaTech/j8-tests/blob/master/Readme.md#callgraph-ir
+
+The ground truth for the call graph test is usually manually generated
+(but often the full call graph output is useful to copy and paste from).
+Edges should be added which reflect tricky constructs like lambdas and
+default methods.
 '''
 import pytest
 import subprocess
