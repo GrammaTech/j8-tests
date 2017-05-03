@@ -21,9 +21,10 @@ import glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
-def test_callgraph(adapter,app,tmpdir):
+@pytest.fixture(scope='module')
+def ir(adapter,app,tmpdir_factory):
     '''
-        Does the callgraph test
+        Builds the call graph ir
     '''
     # setup for the test
     class_path, adapter_name = adapter
@@ -43,6 +44,24 @@ def test_callgraph(adapter,app,tmpdir):
         main = None
     assert not main == None, main
 
+    # cmd for fullcg
+    cmd = ['java', 
+        '-Djava.io.tmpdir=' + str(tmpdir_factory.mktemp('working',numbered=True)),
+        '-cp', class_path, 
+        adapter_name, dep_path] + jar_names + [main]
+    # generate the fullcg
+    stdout, _, returncode = utils.run_cmd(cmd)
+
+    # failure message to display
+    message = 'Adapter failed to produce callgraph'
+    assert  returncode == 0, message
+    
+    return set(stdout.splitlines())
+    
+
+def test_callgraph_edges(ir,app):
+    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+
     # ground truth
     expected = os.path.join(app_path, 'groundtruth', 'callgraph_edges')
 
@@ -55,24 +74,41 @@ def test_callgraph(adapter,app,tmpdir):
         utils.get_logger().warning(message)
         pytest.skip(message)
 
-    # cmd for fullcg
-    cmd = ['java', 
-        '-Djava.io.tmpdir=' + str(tmpdir),
-        '-cp', class_path, 
-        adapter_name, dep_path] + jar_names + [main]
-    # generate the fullcg
-    stdout, _, returncode = utils.run_cmd(cmd)
-
-    # failure message to display
-    message = 'Adapter failed to produce callgraph'
-    assert  returncode == 0, message
-    
     with open(expected, 'r') as f:
         expected_list = set(l.strip() for l in f)
-    fullcg_list = set(stdout.splitlines())
 
     # get the intersection of expected and fullcg
-    actual = expected_list.intersection(fullcg_list)
+    actual = expected_list.intersection(ir)
+    message = 'Ground Truth differs for app %s' % app
+    # actual and expected sets should be the same
+    assert actual == expected_list, message
+
+def test_callgraph_nodes(ir,app):
+    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+
+    # ground truth
+    expected = os.path.join(app_path, 'groundtruth', 'callgraph_nodes')
+
+    # skip  the test if the ground truth doesn't exists
+    # using imperative skip option
+    if not os.path.exists(expected):
+        message = "Ground Truth for app %s for test %s missing"\
+            % (app, os.path.basename(__file__))
+       # log the message
+        utils.get_logger().warning(message)
+        pytest.skip(message)
+
+    with open(expected, 'r') as f:
+        expected_list = set(l.strip() for l in f)
+    
+    all_nodes = set()
+    for line in ir:
+        (s,d) = line.split(" -> ", 2)
+        all_nodes.add(s)
+        all_nodes.add(d)
+
+    # get the intersection of expected and fullcg
+    actual = expected_list.intersection(all_nodes)
     message = 'Ground Truth differs for app %s' % app
     # actual and expected sets should be the same
     assert actual == expected_list, message
