@@ -49,7 +49,7 @@ def pytest_generate_tests(metafunc):
                          glob.glob(os.path.join(pytest.root_dir, 'src', 'apps', '*'))]
         elif isinstance(app_list, str):
             app_list = [app_list]
-        metafunc.parametrize('app', app_list)
+        metafunc.parametrize('app', app_list, scope='module')
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
