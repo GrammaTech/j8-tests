@@ -21,8 +21,15 @@ import glob
 sys.path.append(os.path.join(pytest.root_dir, 'tests'))
 import utils
 
+def parse_edges(lines):
+    '''
+    Turn an iterator of strings of the form <src-node> -> <tgt-node>
+    into a list of (src,tgt) pairs
+    '''
+    return [tuple(line.split(" -> ", 2)) for line in lines]
+
 @pytest.fixture(scope='module')
-def ir(adapter,app,tmpdir_factory):
+def cg(adapter,app,tmpdir_factory):
     '''
         Builds the call graph ir
     '''
@@ -56,10 +63,24 @@ def ir(adapter,app,tmpdir_factory):
     message = 'Adapter failed to produce callgraph'
     assert  returncode == 0, message
     
-    return set(stdout.splitlines())
-    
+    # parse the edges in the adapter ouput into a list of src/dst pairs
+    edges = parse_edges(stdout.splitlines())
 
-def test_callgraph_edges(ir,app):
+    # build a dictionary representing the call graph
+    # nodes in the dictionary map to a set of targets
+    # nodes part of the call graph but without any outgoing edges
+    # will exist in the dictionary but with an empty set
+    cg = dict()
+    for (s,t) in edges:
+        if s in cg:
+            cg[s].add(t)
+        else:
+            cg[s] = set((t,))
+        if not t in cg:
+            cg[t] = set()
+    return cg
+
+def test_callgraph_edges(cg,app):
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
 
     # ground truth
@@ -75,15 +96,14 @@ def test_callgraph_edges(ir,app):
         pytest.skip(message)
 
     with open(expected, 'r') as f:
-        expected_list = set(l.strip() for l in f)
+        edges = parse_edges(l.rstrip("\n") for l in f)
+        
+    for (s,t) in edges:
+        assert s in cg, "call graph contains " + s
+        assert t in cg, "call graph contains " + t
+        assert t in cg[s], "call graph contains " + s + " -> " + t
 
-    # get the intersection of expected and fullcg
-    actual = expected_list.intersection(ir)
-    message = 'Ground Truth differs for app %s' % app
-    # actual and expected sets should be the same
-    assert actual == expected_list, message
-
-def test_callgraph_nodes(ir,app):
+def test_callgraph_nodes(cg,app):
     app_path = os.path.join(pytest.root_dir, 'src/apps', app)
 
     # ground truth
@@ -99,16 +119,7 @@ def test_callgraph_nodes(ir,app):
         pytest.skip(message)
 
     with open(expected, 'r') as f:
-        expected_list = set(l.strip() for l in f)
+        nodes = [l.strip() for l in f]
     
-    all_nodes = set()
-    for line in ir:
-        (s,d) = line.split(" -> ", 2)
-        all_nodes.add(s)
-        all_nodes.add(d)
-
-    # get the intersection of expected and fullcg
-    actual = expected_list.intersection(all_nodes)
-    message = 'Ground Truth differs for app %s' % app
-    # actual and expected sets should be the same
-    assert actual == expected_list, message
+    for n in nodes:
+        assert n in cg, "call graph contains " + n
