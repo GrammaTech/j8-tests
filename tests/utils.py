@@ -20,10 +20,9 @@ def generate_classpath(tool_name, tool_path):
         # list of WALA packages
         prj = ['core.tests', 'core', 'shrike', 'util']
         # join the packages with tool_path
-        classpath = ".:" + ":".join([os.path.join(tool_path,\
+        return [os.path.join(tool_path,\
                 'com.ibm.wala.' +  pt, 'target/classes')\
-                for pt in prj])
-        return classpath
+                for pt in prj]
 
     elif tool_name == 'soot':
         # class path for dependencies
@@ -34,24 +33,19 @@ def generate_classpath(tool_name, tool_path):
         cp_soot = [os.path.join(tool_path, 'classes'),
                    os.path.join(tool_path, 'libs/*')]
         # combined classpath
-        classpath = ".:" + ":".join(dep + cp_soot)
-        return classpath
+        return dep + cp_soot
 
     elif tool_name == 'accrue':
         # set classpath
-        classpath = ":".join([
-            ".",
+        return [
             os.path.join(tool_path, 'target/classes'),
             os.path.join(tool_path, 'target/dependency/*'),
             os.path.join(tool_path, 'data')
-            ])
-        return classpath
+            ]
             
     elif tool_name == 'joana':
-        return ":".join([
-            ".",
-            os.path.join(tool_path, 'dist', 'joana.wala.jodroid', 'classes')
-            ])
+        return [os.path.join(tool_path, 'dist', 'joana.wala.jodroid', 'classes')]
+
     else:
         raise KeyError(tool_name + " not supported")
 

@@ -26,6 +26,8 @@ def xadapter(tool_name, tool_path):
     adapter_name = tool_name.title() + 'CGAdapter';
     # set class path
     class_path = utils.generate_classpath(tool_name, tool_path)
+    class_path.insert(0, os.curdir)
+    class_path = os.pathsep.join(class_path)
     # compile adapter
     cmd = ['javac', '-cp', class_path, adapter_name + '.java']
     # run the adapter cmd
