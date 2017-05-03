@@ -19,27 +19,31 @@ import com.ibm.wala.ipa.slicer.*;
 import com.ibm.wala.types.*;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
-import com.ibm.wala.util.config.AnalysisScopeReader;
+import com.ibm.wala.util.io.FileProvider;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.jar.JarFile;
 
 public class WalaSLAdapter {
     // args == [jre path, app jar 1, ..., app jar n, entrypoint]
     public static void main(String[] args)
             throws WalaException, IllegalArgumentException, CancelException, IOException {
 
-        // Build the class path
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < args.length - 1; i++) {
-            if (i != 1) sb.append(File.pathSeparatorChar);
-            sb.append(args[i]);
-        }
+        String jre_jars = args[0];
 
-        AnalysisScope scope =
-                AnalysisScopeReader.makeJavaBinaryAnalysisScope(
-                        sb.toString(), new File(CallGraphTestUtil.REGRESSION_EXCLUSIONS));
+        // This mostly reimplements the meat of
+        // AnalysisScopeReader.makeJavaBinaryAnalysisScope
+        // We roll this ourselves so we can ensure *our* rt.jar is used, regardless
+        // of the jvm being used or wala.properties
+        AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
+        ClassLoaderReference primordial = scope.getPrimordialLoader();
+        scope.addToScope(primordial, new JarFile(new File(jre_jars, "rt.jar")));
+        scope.addToScope(primordial, new FileProvider().getJarFileModule("primordial.jar.model"));
+        ClassLoaderReference application = scope.getApplicationLoader();
+        for (int i = 1; i < args.length - 1; i++)
+            scope.addToScope(application, new JarFile(args[i], false));
 
         ClassHierarchy cha = ClassHierarchyFactory.make(scope);
 
