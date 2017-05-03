@@ -47,8 +47,9 @@ def test_slicing(adapter,app,tmpdir):
     # ground truth
     expected = os.path.join(app_path, 'groundtruth', 'slicing_expected')
 
-    query = open(os.path.join(app_path, 'groundtruth', 'slicing_query'), 'r')
-    if not query:
+    try:
+        query = open(os.path.join(app_path, 'groundtruth', 'slicing_query'), 'r')
+    except IOError:
         message = "slicing query for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
         # log the message
