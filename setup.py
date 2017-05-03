@@ -83,4 +83,4 @@ if __name__ == "__main__":
     run_check(logger)
     # call pytest in current directory using '.'
     sys.argv.extend('.');
-    pytest.main(sys.argv[1:])
+    sys.exit(pytest.main(sys.argv[1:]))
