@@ -123,3 +123,41 @@ def test_callgraph_nodes(cg,app):
     
     for n in nodes:
         assert n in cg, "call graph contains " + n
+
+def has_path(g, src, tgt):
+    if not src in g:
+        return False
+    wl = [src]
+    visited = set()
+    while wl:
+        n = wl.pop()
+        for t in g[n]:
+            if t == tgt:
+                return True
+            if t not in visited:
+                visited.add(t)
+                wl.append(t)
+    return False
+
+def test_callgraph_paths(cg,app):
+    app_path = os.path.join(pytest.root_dir, 'src/apps', app)
+
+    # ground truth
+    expected = os.path.join(app_path, 'groundtruth', 'callgraph_paths')
+
+    # skip  the test if the ground truth doesn't exists
+    # using imperative skip option
+    if not os.path.exists(expected):
+        message = "Ground Truth for app %s for test %s missing"\
+            % (app, os.path.basename(__file__))
+       # log the message
+        utils.get_logger().warning(message)
+        pytest.skip(message)
+
+    with open(expected, 'r') as f:
+        pairs = parse_edges(l.rstrip("\n") for l in f)
+
+    for (s,t) in pairs:
+        assert s in cg, "call graph contains " + s
+        assert t in cg, "call graph contains " + t
+        assert has_path(cg, s, t), "call graph has path " + s + " ... " + t
