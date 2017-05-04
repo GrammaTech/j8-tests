@@ -267,7 +267,7 @@ git clone https://github.com/GrammaTech/j8-tests.git
 cd j8-tests/
 ```
 
-* Running the system
+* Command Line Arguments
 ```
 python setup.py --tool <tool1>=<path_to_tool1> 
                 [ --tool2 <tool2>=<path_to_tool2> ]
@@ -291,6 +291,22 @@ python setup.py --tool <tool1>=<path_to_tool1>
   * <tt>--log_output</tt> will generate a log file in <tt>log_run/</tt> containing diagnostic
     information potentially useful for diagnosing test infrastructure problems or failing
     tests.
+
+* Invocation Example
+
+```
+python setup.py --tool wala=/home/me/dev/wala --app=hello
+```
+... where <tt>/home/me/dev/wala</tt> is the root main wala repository, that is, the top level 
+directory you get from cloning [github.com/wala/WALA.git](https://github.com/wala/WALA).
+
+Since this example only had a single --tool option only tests against WALA
+will be run. And because <tt>--app</tt> was provided, only tests againts
+"hello" will be run. If <tt>--app</tt> was not provided, all applications
+would have been tests. If additional <tt>--tool</tt> options were provided
+those tools would be tested too, in addition to WALA. If no <tt>--tool</tt>
+is specified no tests will be run (the test framework will not automatically
+obtain or build any tools, they must be provided externally).
 
 <a name="extending"/>
 
