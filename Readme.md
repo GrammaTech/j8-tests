@@ -306,7 +306,7 @@ instructions).
 Since this example only had a single <tt>--tool</tt> option only tests
 against WALA will be run. And because <tt>--app</tt> was provided, only
 tests against "hello" will be run. If <tt>--app</tt> was not provided, all
-applications would have been tests. If additional <tt>--tool</tt> options
+applications would have been tested. If additional <tt>--tool</tt> options
 were provided those tools would be tested too, in addition to WALA. If no
 <tt>--tool</tt> is specified no tests will be run (the test framework will
 not automatically obtain or build any tools, they must be provided
