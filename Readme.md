@@ -298,15 +298,19 @@ python setup.py --tool <tool1>=<path_to_tool1>
 python setup.py --tool wala=/home/me/dev/wala --app=hello
 ```
 ... where <tt>/home/me/dev/wala</tt> is the root main wala repository, that is, the top level 
-directory you get from cloning [github.com/wala/WALA.git](https://github.com/wala/WALA).
+directory you get from cloning [github.com/wala/WALA.git](https://github.com/wala/WALA). The 
+tool must have been built (in the WALA case, you must run <tt>mvn clean verify
+-DskipTests=true -q</tt>, refer to individual tools' documentation for up to date build 
+instructions).
 
-Since this example only had a single --tool option only tests against WALA
-will be run. And because <tt>--app</tt> was provided, only tests againts
-"hello" will be run. If <tt>--app</tt> was not provided, all applications
-would have been tests. If additional <tt>--tool</tt> options were provided
-those tools would be tested too, in addition to WALA. If no <tt>--tool</tt>
-is specified no tests will be run (the test framework will not automatically
-obtain or build any tools, they must be provided externally).
+Since this example only had a single <tt>--tool</tt> option only tests
+against WALA will be run. And because <tt>--app</tt> was provided, only
+tests against "hello" will be run. If <tt>--app</tt> was not provided, all
+applications would have been tests. If additional <tt>--tool</tt> options
+were provided those tools would be tested too, in addition to WALA. If no
+<tt>--tool</tt> is specified no tests will be run (the test framework will
+not automatically obtain or build any tools, they must be provided
+externally).
 
 <a name="extending"/>
 
