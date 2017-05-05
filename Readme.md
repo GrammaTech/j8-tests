@@ -288,7 +288,6 @@ python setup.py --tool <tool1>=<path_to_tool1>
                 [ --tool2 <tool2>=<path_to_tool2> ]
                 [ --app app1 ] [ --app app2 ]
                 [ -k test_<family> ]
-                [ --log_output ]
 ```
 
   * <tt>--tool foo=/path/to/foo</tt> specifies the name of the tool and its path It must 
@@ -303,9 +302,6 @@ python setup.py --tool <tool1>=<path_to_tool1>
     in all lower case (e.g. ant).
   * <tt>-k test_&lt;family&gt;</tt> limits the test families that will be run. If no <tt>-k</tt>
     options are specified all test families will be run.
-  * <tt>--log_output</tt> will generate a log file in <tt>log_run/</tt> containing diagnostic
-    information potentially useful for diagnosing test infrastructure problems or failing
-    tests.
   * Additionally, all standard pytest 
     [options](https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest)
     are supported (also listed with <tt>setup.py --help</tt>). <tt>-v</tt> for more verbose 

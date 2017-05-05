@@ -30,9 +30,9 @@ def adapter(request, tmpdir_factory):
         '-cp', os.pathsep.join(class_path), 
         os.path.join(os.path.dirname(__file__), adapter_name + '.java')
         ]
-    # run the adapter cmd
-    _, _, returncode = utils.run_cmd(cmd)
-    # check if the build passed
-    assert returncode == 0
+    utils.run_cmd(cmd)
+
+    # insert our temporary directory into the classpath (before the
+    # tool's)
     class_path.insert(0, objdir)
     return (os.pathsep.join(class_path), adapter_name)

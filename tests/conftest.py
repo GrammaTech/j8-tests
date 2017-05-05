@@ -9,7 +9,6 @@
 import pytest
 import itertools
 import json
-import logging
 import os
 import glob
 
@@ -50,32 +49,3 @@ def pytest_generate_tests(metafunc):
         elif isinstance(app_list, str):
             app_list = [app_list]
         metafunc.parametrize('app', app_list, scope='module')
-
-@pytest.hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_makereport(item, call):
-    '''
-        Logging during the post-processing of a test run
-        Ref: https://docs.pytest.org/en/latest/example/simple.html#post-process-test-reports-failures
-        @item : test run object
-    '''
-    # execute all other hooks to obtain the report object
-    outcome = yield
-    # result env for the test
-    rep = outcome.get_result()
-    # log on call, not on setup/teardown
-    if rep.when == "call":
-        # get logger
-        logger = logging.getLogger('JAVA8_Tests')
-        # case where logging handler is a file
-        if len(logger.handlers) > 0 and\
-                isinstance(logger.handlers[0], logging.FileHandler):
-            # custom message to log test name, status and parameter
-            message = 'Test --> %s -- status --> %s -- param --> %s' % \
-                (item.__dict__['name'], rep.outcome,\
-                item.__dict__['funcargs'])
-            # if test failed log it as error
-            if rep.failed:
-                logger.error(message)
-            # if test passed log it as info
-            else:
-                logger.info(message)

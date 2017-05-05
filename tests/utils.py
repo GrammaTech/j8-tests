@@ -1,14 +1,10 @@
 """
 Utilities for running tests:
 1) Generate classpath for tool
-2) Decorator to change directory
+2) run_cmd wrapper for subprocess
 """
 import os
-import pytest
 import subprocess
-import functools
-import logging
-import sys
 
 def generate_classpath(tool_name, tool_path):
     '''
@@ -49,44 +45,14 @@ def generate_classpath(tool_name, tool_path):
     else:
         raise KeyError(tool_name + " not supported")
 
-def get_logger():
-    ''' common logger interface'''
-    logger = logging.getLogger('JAVA8_Tests')
-    return logger
-
-def run_cmd(cmd,stdin=None):
+def run_cmd(cmd,**kwargs):
     '''
         Use subprocess module to execute a shell command
-        This will return stdout, stderr and shell return code
-        This interface supports logging
+        This will stdout and theow if the command fails
     '''
-    # log errors
-    logger = get_logger()
-    # default logging handler is console, skip logging
-    use_logger = False
-    #  check if logging handler is file, use logging
-    if len(logger.handlers) > 0 and\
-        isinstance(logger.handlers[0], logging.FileHandler):
-        use_logger = True
-    try:
-        proc = subprocess.Popen(cmd,\
-                stdin=stdin,\
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = proc.communicate()
-        # convert byte to string
-        stderr = stderr.decode("utf-8")
-        stdout = stdout.decode("utf-8")
-        # get the return code
-        returncode = proc.returncode
-        if not returncode == 0 and\
-            use_logger:
-            logger.debug(stdout)
-            logger.debug(stderr)
-    # in case of error set everything to None
-    except:
-        returncode = -1
-        stdout = None
-        stderr = None
-        if use_logger:
-            logger.error(sys.exc_info())
-    return stdout, stderr, returncode
+    proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,**kwargs)
+    stdout = proc.stdout.read()
+    proc.stdout.close()
+    proc.wait()
+    assert proc.returncode == 0, ' '.join(cmd) + " failed"
+    return stdout

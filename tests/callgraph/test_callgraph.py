@@ -60,12 +60,8 @@ def cg(adapter,app,tmpdir_factory):
         '-cp', class_path, 
         adapter_name, dep_path] + jar_names + [main]
     # generate the fullcg
-    stdout, _, returncode = utils.run_cmd(cmd)
+    stdout = utils.run_cmd(cmd)
 
-    # failure message to display
-    message = 'Adapter failed to produce callgraph'
-    assert  returncode == 0, message
-    
     # parse the edges in the adapter ouput into a list of src/dst pairs
     edges = parse_edges(stdout.splitlines())
 
@@ -95,8 +91,6 @@ def test_callgraph_edges(cg,app):
     if not os.path.exists(expected):
         message = "Ground Truth for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
-       # log the message
-        utils.get_logger().warning(message)
         pytest.skip(message)
 
     with open(expected, 'r') as f:
@@ -120,8 +114,6 @@ def test_callgraph_nodes(cg,app):
     if not os.path.exists(expected):
         message = "Ground Truth for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
-       # log the message
-        utils.get_logger().warning(message)
         pytest.skip(message)
 
     with open(expected, 'r') as f:
@@ -161,8 +153,6 @@ def test_callgraph_paths(cg,app):
     if not os.path.exists(expected):
         message = "Ground Truth for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
-       # log the message
-        utils.get_logger().warning(message)
         pytest.skip(message)
 
     with open(expected, 'r') as f:

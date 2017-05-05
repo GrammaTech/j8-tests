@@ -53,7 +53,6 @@ def test_slicing(adapter,app,tmpdir):
         message = "slicing query for app %s for test %s missing"\
             % (app, os.path.basename(__file__))
         # log the message
-        utils.get_logger().warning(message)
         pytest.skip(message)
 
     # cmd for fullcg
@@ -62,13 +61,9 @@ def test_slicing(adapter,app,tmpdir):
         '-cp', class_path, 
         adapter_name, dep_path] + jar_names + [main]
     # generate the fullcg
-    stdout, _, returncode = utils.run_cmd(cmd,stdin=query)
+    stdout = utils.run_cmd(cmd,stdin=query)
     query.close()
     
-    # failure message to display
-    message = 'Adapter failed to produce results'
-    assert  returncode == 0, message
-
     message = ""
     expected_f = open(os.path.join(app_path, 'groundtruth', 'slicing_result'), 'r')
     for (expected,actual) in zip((l.strip() for l in expected_f), stdout.splitlines()):
