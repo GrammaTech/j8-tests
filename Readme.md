@@ -35,7 +35,7 @@ Our framework structure and architecture is illustrated by the sample directory 
 ```
 |--- conftest.py
 |--- pytest.ini
-|--- setup.py
+|--- run.py
 |--- src
 |    |--- apps
 |    |    |--- church
@@ -56,7 +56,7 @@ Our framework structure and architecture is illustrated by the sample directory 
     `--- ... other test families ...
 ```
 
-The files `pytest.ini`, `conftest.py` and `setup.py` provide top-level setup and configuration information. More information is available as comments in the files themselves.
+The files `pytest.ini`, `conftest.py` and `run.py` provide top-level setup and configuration information. More information is available as comments in the files themselves.
 
 The `src/apps` directory contains the applications and ground truth for each application. Our framework will run tests on all the applications found in this directory.
 
@@ -284,10 +284,10 @@ cd j8-tests/
 
 * Command Line Arguments
 ```
-python setup.py --tool <tool1>=<path_to_tool1> 
-                [ --tool2 <tool2>=<path_to_tool2> ]
-                [ --app app1 ] [ --app app2 ]
-                [ -k test_<family> ]
+python run.py --tool <tool1>=<path_to_tool1> 
+              [ --tool2 <tool2>=<path_to_tool2> ]
+              [ --app app1 ] [ --app app2 ]
+              [ -k test_<family> ]
 ```
 
   * <tt>--tool foo=/path/to/foo</tt> specifies the name of the tool and its path It must 
@@ -304,13 +304,13 @@ python setup.py --tool <tool1>=<path_to_tool1>
     options are specified all test families will be run.
   * Additionally, all standard pytest 
     [options](https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest)
-    are supported (also listed with <tt>setup.py --help</tt>). <tt>-v</tt> for more verbose 
+    are supported (also listed with <tt>run.py --help</tt>). <tt>-v</tt> for more verbose 
     output and <tt>-k</tt> to filter which tests are run are probably the most useful.
 
 * Invocation Example
 
 ```
-python setup.py --tool wala=/home/me/dev/wala --app=hello
+python run.py --tool wala=/home/me/dev/wala --app=hello
 ```
 ... where <tt>/home/me/dev/wala</tt> is the root main wala repository, that is, the top level 
 directory you get from cloning [github.com/wala/WALA.git](https://github.com/wala/WALA). The 
@@ -326,6 +326,14 @@ were provided those tools would be tested too, in addition to WALA. If no
 <tt>--tool</tt> is specified no tests will be run (the test framework will
 not automatically obtain or build any tools, they must be provided
 externally).
+
+<tt>run.py</tt> actually exists only as a convenience. You can also run the
+tests with the <tt>pytest</tt> script installed with pytest itself (which
+probably lives in /usr/bin or $HOME/.local/bin, depending on how you pip
+install'ed pytest), or by running <tt>python -m pytest</tt>. All methods
+take the exact same set of command line arguments. See the
+[pytest documentation](https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest)
+for more details.
 
 <a name="extending"/>
 

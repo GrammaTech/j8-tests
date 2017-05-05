@@ -12,7 +12,7 @@ foreach(keys %tools) {
     $tools{$_} = $ENV{$u} if(exists $ENV{$u});
 }
 
-my @cmd = qw(python setup.py -v);
+my @cmd = qw(python run.py -v);
 my @k = ();
 push @cmd, map {
     if(/^\w+$/) {

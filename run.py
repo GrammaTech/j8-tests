@@ -1,7 +1,7 @@
 """
     Main driver program for test framework.
     Any command line arguments are passed to pytest
-    Usage : python setup.py --tool wala=/path/to/wala
+    Usage : python run.py --tool wala=/path/to/wala
 """
 
 import sys
