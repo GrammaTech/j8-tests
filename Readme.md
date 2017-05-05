@@ -291,6 +291,10 @@ python setup.py --tool <tool1>=<path_to_tool1>
   * <tt>--log_output</tt> will generate a log file in <tt>log_run/</tt> containing diagnostic
     information potentially useful for diagnosing test infrastructure problems or failing
     tests.
+  * Additionally, all standard pytest 
+    [options](https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest)
+    are supported (also listed with <tt>setup.py --help</tt>). <tt>-v</tt> for more verbose 
+    output and <tt>-k</tt> to filter which tests are run are probably the most useful.
 
 * Invocation Example
 
