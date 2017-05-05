@@ -1,4 +1,3 @@
 *.pyc
 *.class
 /.cache
-/log_run
