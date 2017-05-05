@@ -371,7 +371,19 @@ def test_family_testid(adapter,app):
 ### Adding a new IR/test family
 
 To add a new test family and associated IR, you should:
-* Design the IR carefully so that it is tool-independent and contains enough information to verify multiple properties of the tool
+* Design the IR carefully so that it is tool-independent and contains enough
+  information to verify multiple properties of the tool. However, be sure to 
+   strike a balance between generality and cost to compute. For example:
+     * The call graph test outputs the entire call graph, even though only
+       parts of it are likely useful for any evaluation of the call graph.
+       We do this because it is relatively cheap to compute the call graph,
+       and it makes the call graph adapters more flexible, because they can
+       be used for a wide variety of different checks.
+     * Conversely, the slicing adapters take a query as input, and only output
+       the answer to that query. This makes them less general (for new types
+       of slicing tests, the adapters will have to be modified), but it means
+       they don't need to compute and output the entire PDG (which is potentally
+       very expensive with some tools).
 * Add an adapter for one or more tools and the new IR, as explained above
 * Add one or more tests/test evaluators, as explained above
 * Update the documentation as explained [below](#extending-documentation).
