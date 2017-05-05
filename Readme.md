@@ -7,6 +7,10 @@
 [Installing and Running our Framework](#setup)  
 [Extending our Test Suite](#extending)  
 
+If you just want to know how to install and run the tool (and hopefully read
+about the architecture later!), please see the [Installing and
+Running](#setup) section.
+
 <a name="overview"/> 
 
 ## Overview and Terminology
