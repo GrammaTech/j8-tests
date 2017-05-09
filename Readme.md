@@ -178,7 +178,7 @@ test infrastructure.
   of any Java implementation is the runtime library (which includes all the "built-in"
   functionality like java.lang, java.io, java.util, etc).
 * The source code is available at http://hg.openjdk.java.net/. The provided jars were pulled
-  from a binary distribution of 1.8.0_45.
+  from a binary distribution of 1.8.0_111.
 * The Java8 runtime uses every new Java8 feature extensively, as API are often improved to take
   advantage of new features.
 * There is no single entry point for the Java8 runtime, and it certainly isn't suitable
