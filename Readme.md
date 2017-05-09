@@ -135,6 +135,7 @@ test infrastructure.
   analyze with most tools.
 * The source code (<tt>Church.java</tt>) lives alongsie the <tt>.jar</tt> in apps/church.
 * The Church class (no package) has a main method which demonstrates the various operations. This is a suitable entry point for analysis and should provide good coverage of all features.
+* [LICENSE](src/apps/church/LICENSE)
 
 ### Ant
 
@@ -146,6 +147,7 @@ test infrastructure.
   and method references.
 * <tt>org.apache.tools.ant.Main</tt> has a main method and is the primary driver for the build
   system. It is suitable as an entrypoint for analysis.
+* [LICENSE](src/apps/ant/LICENSE)
 
 ### Cassandra
 
@@ -157,6 +159,7 @@ test infrastructure.
 * Cassandra use lambda expressions and method references extensively.
 * <tt>org.apache.cassandra.service.CassandraDaemon</tt> has a main method and is the
   primary driver for the database daemon. It is suitable as an entrypoint for analysis.
+* [LICENSE](src/apps/cassandra/LICENSE)
 
 ### Eclipse (subset)
 * [Eclipse](https://eclipse.org) is a Java development environment and IDE.
@@ -167,6 +170,7 @@ test infrastructure.
 * Eclipse uses lambda expressions and method references.
 * <tt>org.eclipse.equinox.launcher.Main</tt> has a main method and is the entry point for
   the launcher jar. It is suitable as an entrypoint for analysis.
+* [LICENSE](src/apps/eclipse/LICENSE)
 
 ### OpenJDK Java8 Runtime
 
@@ -179,6 +183,7 @@ test infrastructure.
   advantage of new features.
 * There is no single entry point for the Java8 runtime, and it certainly isn't suitable
   for analysis as a whole. Instead small subsets or individual classes are typically analyzed.
+* [LICENSE](src/apps/j8rt/LICENSE) (NB: license is only for the stub application)
 
 ### Jetty
 
@@ -191,6 +196,7 @@ test infrastructure.
 * Jetty uses lambda expressions and method references.
 * <tt>org.eclipse.jetty.start.Main</tt> has a main method and is the primary driver for the
   server.
+* [LICENSE](src/apps/jetty/LICENSE)
 
 ### Hello
 * [Hello](src/apps/hello/Hello.java) is a very minimal hello worldish java program (which
@@ -204,6 +210,7 @@ test infrastructure.
 * Hello does not use any Java 8 features (it is intended only to test the infrastructure).
 * <tt>Hello</tt> had a main method and is a suitable entry point for analysis (you can reach
   *both* other methods from it!).
+* [LICENSE](src/apps/hello/LICENSE)
 
 <a name="provided-tests"/>
 
