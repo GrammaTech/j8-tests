@@ -1,0 +1,1 @@
+java.lang.Integer.valueOf(I)Ljava/lang/Integer;:0 -> java.io.PrintStream.println(Ljava/lang/Object;)V:0

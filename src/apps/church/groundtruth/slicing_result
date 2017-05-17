@@ -1,0 +1,1 @@
+Church.runBinary(Ljava/lang/String;Ljava/util/function/BiFunction;LChurch;LChurch;)V:2 -> Church.add(LChurch;)LChurch;:0: true
