@@ -345,6 +345,13 @@ take the exact same set of command line arguments. See the
 [pytest documentation](https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest)
 for more details.
 
+* Slow Tests
+   * Several combinations of applications/tools/tests are very slow. These tests are skipped
+     by default. They can be enabled with the <tt>--slow</tt> option.
+   * The file <tt>[slow_tests.txt](slow_tests.txt)</tt> contains a list of regular 
+     expressions, one per line, any test matching one of these will be skipped. 
+   * Pytest test names are of the form test_&lt;family&gt;_&lt;testid&gt;[&lt;tool&gt;-&lt;app&gt;].
+
 <a name="extending"/>
 
 ## Extending the test suite
