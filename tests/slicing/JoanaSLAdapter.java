@@ -102,6 +102,8 @@ public class JoanaSLAdapter {
         // PointsToPrecision.TYPE_BASED is context insensitive, but if we
         // have a context sensitive call graph we'll need to handle it here
         // (probblay by returning a Set<SDGNode>
+        if(nodes.isEmpty())
+            throw new Error(m + " not found in call graph");
         if (nodes.size() != 1)
             throw new UnsupportedOperationException("context sensitivity not supported");
         CGNode node = nodes.iterator().next(); /* XXX context sensitivity? */
