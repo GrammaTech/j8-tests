@@ -17,6 +17,7 @@ def pytest_addoption(parser):
     parser.addoption("--tool", action="append", type=split_tool, help="tool_name=tool_path")
     parser.addoption("--conf_file", help="configuration file")
     parser.addoption("--app", action="append", type=str.lower, help="target app name")
+    parser.addoption("--slow", action="store_true")
 
 def pytest_namespace():
     '''

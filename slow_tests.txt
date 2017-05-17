@@ -1,0 +1,3 @@
+.*\[wala-jetty\]$
+.*\[joana-ant\]$
+test_slicing\[wala-ant\]$

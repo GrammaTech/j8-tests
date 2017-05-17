@@ -11,6 +11,7 @@ import itertools
 import json
 import os
 import glob
+import re
 
 def pytest_generate_tests(metafunc):
     '''
@@ -49,3 +50,18 @@ def pytest_generate_tests(metafunc):
         elif isinstance(app_list, str):
             app_list = [app_list]
         metafunc.parametrize('app', app_list, scope='module')
+
+
+def pytest_collection_modifyitems(config, items):
+    if config.option.slow:
+        return
+    try:
+        with open(os.path.join(pytest.root_dir, 'slow_tests.txt')) as f:
+            slow_tests = [re.compile(l.rstrip("\n")) for l in f]
+    except (OSError, re.error):
+        return
+        
+    for item in items[:]:
+        if any(i.match(item.name) for i in slow_tests):
+            #item.warn('', "Skipping long running test " + item.name)
+            items.remove(item)
