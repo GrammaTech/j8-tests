@@ -294,6 +294,7 @@ cd j8-tests/
 python run.py --tool <tool1>=<path_to_tool1> 
               [ --tool2 <tool2>=<path_to_tool2> ]
               [ --app app1 ] [ --app app2 ]
+              [ --slow ]
               [ -k test_<family> ]
 ```
 
@@ -309,6 +310,8 @@ python run.py --tool <tool1>=<path_to_tool1>
     in all lower case (e.g. ant).
   * <tt>-k test_&lt;family&gt;</tt> limits the test families that will be run. If no <tt>-k</tt>
     options are specified all test families will be run.
+  * <tt>--slow</tt> additionally runs tests which are very slow (>~15 min). By default these
+    are skipped.
   * Additionally, all standard pytest 
     [options](https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest)
     are supported (also listed with <tt>run.py --help</tt>). <tt>-v</tt> for more verbose 
