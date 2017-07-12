@@ -135,7 +135,7 @@ test infrastructure.
   analyze with most tools.
 * The source code (<tt>Church.java</tt>) lives alongsie the <tt>.jar</tt> in apps/church.
 * The Church class (no package) has a main method which demonstrates the various operations. This is a suitable entry point for analysis and should provide good coverage of all features.
-* [LICENSE](src/apps/church/LICENSE)
+* [LICENSE](LICENSE)
 
 ### Ant
 
@@ -183,7 +183,7 @@ test infrastructure.
   advantage of new features.
 * There is no single entry point for the Java8 runtime, and it certainly isn't suitable
   for analysis as a whole. Instead small subsets or individual classes are typically analyzed.
-* [LICENSE](src/apps/j8rt/LICENSE) (NB: license is only for the stub application)
+* [LICENSE](LICENSE) (NB: license is only for the stub application)
 
 ### Jetty
 
@@ -210,7 +210,7 @@ test infrastructure.
 * Hello does not use any Java 8 features (it is intended only to test the infrastructure).
 * <tt>Hello</tt> had a main method and is a suitable entry point for analysis (you can reach
   *both* other methods from it!).
-* [LICENSE](src/apps/hello/LICENSE)
+* [LICENSE](LICENSE)
 
 <a name="provided-tests"/>
 
